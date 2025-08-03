@@ -1,0 +1,892 @@
+//Perilous Piracy (Frostwynd Normal)
+//Author: Signalmax
+//Steam Link: https://steamcommunity.com/id/signalmax/
+
+#base robot_frostwynd.pop
+
+// Where spawnbot
+// Where spawnbot_right
+// Where spawnbot_left
+// Where spawnbot_rand
+
+WaveSchedule
+{
+	StartingCurrency 800
+	RespawnWaveTime 3
+	CanBotsAttackWhileInSpawnRoom no
+	Mission // Spies
+	{
+		Where spawnbot_mission_spy
+    Where spawnbot_mission_spy_a
+		Objective Spy
+		InitialCooldown 65
+		BeginAtWave 4
+		RunForThisManyWaves 1
+		CooldownTime 60
+		DesiredCount 2
+		TFBot
+		{
+			Template FW_Spy
+		}
+	}
+	Wave ///WAVE 1 - 600+100 CREDITS (800S/1300P)
+	{
+    InitWaveOutput //This block takes care of setting up gatebot mode & applying Frostwynd's weapon restrictions. It must be present in every wave.
+		{
+			Target bignet
+			Action RunScriptCode
+			Param "
+				// Load popextensions script
+				IncludeScript(`popextensions_main.nut`, getroottable())
+
+        EntFire(`point_commentary_node`,`kill`) //stupid hack popext fix to make it stop messing up the hud on first load
+        EntFire(`setup_gatebot_mode`, `Trigger`)
+        
+				MissionAttrs({
+          PlayerAttributes = {
+						[TF_CLASS_HEAVYWEAPONS] = {
+							`damage bonus` : 2,
+							`fire rate bonus` : 1.5,
+							`max health additive bonus` : 300,
+              `move speed penalty` :  0.75,
+              `mult player model scale` : 1.75,
+						  },
+						},
+
+					LoadoutControl = {
+            //Scout 
+            //Primaries
+            tf_weapon_scattergun = null
+            tf_weapon_handgun_scout_primary = null
+            tf_weapon_pep_brawler_blaster = null
+            tf_weapon_soda_popper = null
+            tf_weapon_sniperrifle = null
+
+            //Secondaries
+            tf_weapon_pistol_scout = `Mad Milk`
+            tf_weapon_handgun_scout_secondary = `Mad Milk`
+
+            //Soldier 
+            //Primaries
+            tf_weapon_rocketlauncher = `Rocket Jumper`
+            tf_weapon_rocketlauncher_directhit = `Rocket Jumper`
+            tf_weapon_particle_cannon = `Rocket Jumper`
+            tf_weapon_rocketlauncher_airstrike = `Rocket Jumper`
+
+            //Secondaries
+            tf_weapon_shotgun_soldier = `The Buff Banner`
+            tf_weapon_raygun = `The Buff Banner`
+
+            //Pyro
+            //Primaries
+            tf_weapon_flamethrower = null
+            tf_weapon_rocketlauncher_fireball = null
+            
+            //Secondaries
+            tf_weapon_shotgun_pyro = `The Flare Gun`
+            tf_weapon_jar_gas = `The Flare Gun` //I'm going back and forth on allowing it but I think it might just be too good
+
+            //Demo
+            //Primaries
+            tf_weapon_grenadelauncher = null
+            tf_weapon_cannon = null
+
+            //Secondaries
+            tf_weapon_pipebomblauncher = `Stickybomb Jumper`
+            
+            //Heavy
+            //Primaries
+            tf_weapon_minigun = null
+
+            //Secondaries
+            tf_weapon_shotgun_hwg = `The Sandvich`
+
+            //Engineer
+            //Primaries
+            tf_weapon_shotgun_primary = `The Pomson 6000`
+            tf_weapon_sentry_revenge = `The Pomson 6000`
+            tf_weapon_shotgun_building_rescue = `The Pomson 6000`
+            //Pomson allowed under the 'Magyks' Clause
+
+            //Secondaries
+            tf_weapon_pistol = `The Wrangler`
+
+            //Medic 
+            tf_weapon_syringegun_medic = `The Crusader's Crossbow`
+
+            //Sniper
+            //Primaries
+            tf_weapon_sniperrifle = `The Huntsman`
+            tf_weapon_sniperrifle_decap = `The Huntsman`
+            tf_weapon_sniperrifle_classic = `The Huntsman`
+
+            //Secondaries
+            tf_weapon_smg = `Jarate`
+            tf_weapon_charged_smg = `Jarate`
+
+            //Spy 
+            tf_weapon_revolver = null
+					},
+					ItemAttributes = {
+						tf_weapon_wrench = {
+							`mod wrench builds minisentry`: 1
+						  }
+						}
+					})
+			"
+		}
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action trigger
+		}
+        
+		Checkpoint Yes
+        
+		WaveSpawn //1a_a - Initial Gru Heavies
+		{
+			Where spawnbot_right
+      Where spawnbot_right_a
+			Name "1a_a"
+			TotalCount 16
+			MaxActive 6
+			SpawnCount 2
+			WaitBeforeStarting 0
+			WaitBetweenSpawns 10
+			TotalCurrency 200
+			TFBot
+			{
+				Template FW_Heavy_GRU
+			}
+		}
+        WaveSpawn //1a_b - Initial Milk Scouts
+		{
+			Where spawnbot_left
+      Where spawnbot_left_a
+			Name "1a_b"
+			TotalCount 16
+			MaxActive 6
+			SpawnCount 2
+			WaitBeforeStarting 0
+			WaitBetweenSpawns 10
+			TotalCurrency 200
+			TFBot
+			{
+				Template FW_Scout_Milk
+			}
+		}
+        WaveSpawn //1a_c - Bruiser Champs
+		{
+			Where spawnbot
+      Where spawnbot_a
+			Name "1a_b"
+			TotalCount 4
+			MaxActive 2
+			SpawnCount 1
+			WaitBeforeStarting 15
+			WaitBetweenSpawns 15
+			TotalCurrency 200
+			TFBot
+			{
+				Template FW_Scout_Champion_Bruising
+			}
+		}
+
+    WaveSpawn //Infinite KGB Support
+		{
+      WaitForAllSpawned "1a_b"
+			Where spawnbot_rand
+      Where spawnbot_rand_a
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 0
+			WaitBetweenSpawns 10
+			TotalCurrency 0
+			Support 1
+			TFBot
+			{
+				Template FW_Heavy_KGB
+			}
+		}
+	}
+    
+  Wave ///WAVE 2 - 400+100 CREDITS (1300S/1800P)
+	{
+    InitWaveOutput
+    {
+      Target setup_gatebot_mode
+      Action Trigger
+    }
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action trigger
+		}
+        
+		Checkpoint Yes
+        
+    WaveSpawn //2a_a - Tank
+		{
+			Name "2a_a"
+      Where spawnbot_tunnel
+      Where spawnbot_tunnel_a
+			TotalCount 1
+			WaitBeforeStarting 1
+			TotalCurrency 300
+			TFBot
+      {
+        Template FW_Giant_Heavy_Goliath
+        Health 15000
+      }
+		}
+        WaveSpawn //2a_b - Fan Scouts
+		{
+			Where spawnbot
+      Where spawnbot_a
+			Name "2a_b"
+			TotalCount 12
+			MaxActive 8
+			SpawnCount 4
+			WaitBeforeStarting 0
+			WaitBetweenSpawns 10
+			TotalCurrency 100
+			TFBot
+			{
+				Template FW_Scout_Fan
+			}
+		}
+    WaveSpawn //Infinite KGB Support
+		{
+			Where spawnbot_rand
+      Where spawnbot_rand_a
+			TotalCount 4
+			MaxActive 8
+			SpawnCount 2
+			WaitBeforeStarting 40
+			WaitBetweenSpawns 10
+			TotalCurrency 0
+			Support 1
+			TFBot
+			{
+				Template FW_Heavy_KGB
+			}
+		}
+	}
+    
+    Wave ///WAVE 3 - 500+100 CREDITS (1800S/2400P)
+	{
+    InitWaveOutput
+    {
+      Target setup_gatebot_mode
+      Action Trigger
+    }
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action trigger
+		}
+        
+		Checkpoint Yes
+        
+        WaveSpawn //3a_a - GRU Heavies Left
+		{
+			Where spawnbot_left
+      Where spawnbot_left_a
+			Name "3a_a"
+			TotalCount 16
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 0
+			WaitBetweenSpawns 10
+			TotalCurrency 100
+			TFBot
+			{
+				Template FW_Heavy_GRU
+			}
+		}
+        WaveSpawn //3a_a - GRU Heavies Right
+		{
+			Where spawnbot_right
+      Where spawnbot_right_a
+			Name "3a_a"
+			TotalCount 16
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 0
+			WaitBetweenSpawns 10
+			TotalCurrency 100
+			TFBot
+			{
+				Template FW_Heavy_GRU
+			}
+		}
+        WaveSpawn //3a_b - Steel Champs
+		{
+			Where spawnbot
+      Where spawnbot_a
+			Name "3a_b"
+			TotalCount 2
+			MaxActive 2
+			SpawnCount 1
+			WaitBeforeStarting 10
+			WaitBetweenSpawns 15
+			TotalCurrency 100
+			TFBot
+			{
+				Template FW_Heavy_Champion_Steel
+			}
+		}
+        WaveSpawn //3b_a - KGB Champs
+		{
+			Where spawnbot
+      Where spawnbot_a
+			Name "3b_a"
+			TotalCount 2
+			MaxActive 2
+			SpawnCount 1
+			WaitBeforeStarting 15
+			WaitBetweenSpawns 15
+            WaitForAllSpawned "3a_b"
+			TotalCurrency 100
+			TFBot
+			{
+				Template FW_Heavy_Champion_KGB
+			}
+		}
+        WaveSpawn //3c_a - KGB Champ Right
+		{
+			Where spawnbot_right
+      Where spawnbot_right_a
+			Name "3c_a"
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 8
+			WaitBetweenSpawns 15
+            WaitForAllDead "3b_a"
+			TotalCurrency 50
+			TFBot
+			{
+				Template FW_Heavy_Champion_KGB
+			}
+		}
+        WaveSpawn //3c_b - Steel Champ Left
+		{
+			Where spawnbot_left
+      Where spawnbot_left_a
+			Name "3c_b"
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 5
+			WaitBetweenSpawns 15
+            WaitForAllDead "3b_a"
+			TotalCurrency 50
+			TFBot
+			{
+				Template FW_Heavy_Champion_Steel
+			}
+		}
+    WaveSpawn //Infinite Scout support
+		{
+			Where spawnbot_rand
+      Where spawnbot_rand_a
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 30
+			WaitBetweenSpawns 15
+			TotalCurrency 0
+			Support 1
+			TFBot
+			{
+				Template FW_Scout_Fan
+			}
+		}
+	}
+    
+    Wave ///WAVE 4 - 600+100 CREDITS (2400S/3100P)
+	{
+    InitWaveOutput
+    {
+      Target setup_gatebot_mode
+      Action Trigger
+    }
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action trigger
+		}
+        
+		Checkpoint Yes
+        
+        WaveSpawn //4a_a - Giant Demoknight
+		{
+			Where spawnbot
+      Where spawnbot_a
+			Name "4a_a"
+			TotalCount 2
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 0
+			WaitBetweenSpawns 15
+			TotalCurrency 300
+			TFBot
+			{
+				Template FW_Giant_Demoman_Knight
+			}
+		}
+        WaveSpawn //4a_b - Samurai Soldiers Right
+		{
+			Where spawnbot_right
+      Where spawnbot_right_a
+			Name "4a_b"
+			TotalCount 20
+			MaxActive 4
+			SpawnCount 4
+			WaitBeforeStarting 5
+			WaitBetweenSpawns 10
+			TotalCurrency 100
+			TFBot
+			{
+				Template FW_Soldier_Samurai
+			}
+		}
+        WaveSpawn //4a_c - Huntsmen Left
+		{
+			Where spawnbot_left
+      Where spawnbot_left_a
+			Name "4a_c"
+			TotalCount 12
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 3
+			WaitBetweenSpawns 10
+			TotalCurrency 50
+			TFBot
+			{
+				Template FW_Sniper_Huntsman
+			}
+		}
+        WaveSpawn //4b_a - Huntsman Squad
+		{
+			Where spawnbot
+      Where spawnbot_a
+			Name "4b_a"
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 4
+			WaitBeforeStarting 1
+			WaitBetweenSpawns 10
+            WaitForAllDead "4a_a"
+			TotalCurrency 150
+            Squad
+            {
+                TFBot
+                {
+                    Template FW_Sniper_Champion_Vile
+                }
+                TFBot
+                {
+                    Template FW_Sniper_Huntsman
+                }
+                TFBot
+                {
+                    Template FW_Sniper_Huntsman
+                }
+                TFBot
+                {
+                    Template FW_Sniper_Huntsman
+                }
+            }
+		}
+    WaveSpawn //Infinite Scout support
+		{
+			Where spawnbot_rand
+      Where spawnbot_rand_a
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 30
+			WaitBetweenSpawns 15
+			TotalCurrency 0
+			Support 1
+			TFBot
+			{
+				Template FW_Scout
+			}
+		}
+	}
+    
+  Wave ///WAVE 5 - 700+100 CREDITS (3100S/3900P)
+	{
+    InitWaveOutput
+    {
+      Target setup_gatebot_mode
+      Action Trigger
+    }
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action trigger
+		}
+        
+		Checkpoint Yes
+    WaveSpawn //5a_a - Champion Huntsmans
+		{
+			Where spawnbot
+      Where spawnbot_a
+			Name "5a_a"
+			TotalCount 4
+			MaxActive 2
+			SpawnCount 1
+			WaitBeforeStarting 0
+			WaitBetweenSpawns 15
+			TotalCurrency 100
+			TFBot
+			{
+				Template FW_Sniper_Champion_Huntsman
+			}
+		}
+        WaveSpawn //5a_b - Buccaneers Right
+		{
+			Where spawnbot_right
+      Where spawnbot_right_a
+			Name "5a_b"
+			TotalCount 24
+			MaxActive 4
+			SpawnCount 4
+			WaitBeforeStarting 3
+			WaitBetweenSpawns 10
+			TotalCurrency 100
+			TFBot
+			{
+				Template FW_Demoman_Turner
+                ItemAttributes
+                {
+                    ItemName "The Persian Persuader"
+                    "critboost on kill" 0
+                }
+			}
+		}
+        WaveSpawn //5a_b - Buccaneers Left
+		{
+			Where spawnbot_left
+      Where spawnbot_left_a
+			Name "5a_b"
+			TotalCount 24
+			MaxActive 4
+			SpawnCount 4
+			WaitBeforeStarting 1
+			WaitBetweenSpawns 10
+			TotalCurrency 100
+			TFBot
+			{
+				Template FW_Demoman_Turner
+                ItemAttributes
+                {
+                    ItemName "The Persian Persuader"
+                    "critboost on kill" 0
+                }
+			}
+		}
+        WaveSpawn //5b_a - Giant Heavies
+		{
+			Where spawnbot
+      Where spawnbot_a
+			Name "5b_a"
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 0
+			WaitBetweenSpawns 30
+            WaitForAllDead "5a_a"
+			TotalCurrency 100
+			TFBot
+			{
+				Template FW_Giant_Heavy_KGB
+			}
+		}
+        WaveSpawn //5c_a - Goliath
+		{
+			Name "5c_a"
+      Where spawnbot_tunnel
+      Where spawnbot_tunnel_a
+			TotalCount 1
+			WaitBeforeStarting 3
+			TotalCurrency 300
+            WaitForAllDead "5b_a"
+			TFBot
+      {
+        Template FW_Giant_Heavy_Goliath
+        Health 12500
+      }
+		}
+        WaveSpawn //Buccaneers Right Support
+		{
+			Where spawnbot_right
+      Where spawnbot_right_a
+			TotalCount 32
+			MaxActive 4
+			SpawnCount 4
+			WaitBeforeStarting 10
+			WaitBetweenSpawns 15
+            WaitForallDead "5a_b"
+			TotalCurrency 0
+            Support 1
+			TFBot
+			{
+				Template FW_Demoman_Turner
+                ItemAttributes
+                {
+                    ItemName "The Persian Persuader"
+                    "critboost on kill" 0
+                }
+			}
+		}
+        WaveSpawn //Buccaneers Left Support
+		{
+			Where spawnbot_left
+      Where spawnbot_left_a
+			TotalCount 32
+			MaxActive 4
+			SpawnCount 4
+			WaitBeforeStarting 10
+			WaitBetweenSpawns 15
+            WaitForallDead "5a_b"
+			TotalCurrency 0
+            Support 1
+			TFBot
+			{
+				Template FW_Demoman_Turner
+                ItemAttributes
+                {
+                    ItemName "The Persian Persuader"
+                    "critboost on kill" 0
+                }
+			}
+		}
+	}
+
+  Wave ///WAVE 6 - 200+100 CREDITS (3900S/4200P)
+	{
+    InitWaveOutput
+    {
+      Target setup_gatebot_mode
+      Action Trigger
+    }
+		StartWaveOutput
+		{
+			Target wave_start_relay
+			Action Trigger
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action trigger
+		}
+        
+		Checkpoint Yes
+
+    WaveSpawn //6a_a - Champion Buccaneers
+		{
+			Where spawnbot
+      Where spawnbot_a
+			Name "6a_a"
+			TotalCount 2
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 0
+			WaitBetweenSpawns 15
+			TotalCurrency 50
+			TFBot
+			{
+				Template FW_Demoman_Champion_Caber
+			}
+		}
+
+    WaveSpawn //6a_b - Left Buccaneers
+		{
+			Where spawnbot_left
+      Where spawnbot_left_a
+			Name "6a_b"
+			TotalCount 8
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 1
+			WaitBetweenSpawns 10
+			TotalCurrency 50
+			TFBot
+			{
+				Template FW_Demoman_Caber
+			}
+		}
+    WaveSpawn //6a_b - Right Buccaneers
+		{
+			Where spawnbot_right
+      Where spawnbot_right_a
+			Name "6a_b"
+			TotalCount 8
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 3
+			WaitBetweenSpawns 10
+			TotalCurrency 50
+			TFBot
+			{
+				Template FW_Demoman_Caber
+			}
+		}
+        
+    WaveSpawn //6a_b - Pirate Chief
+		{
+			Where spawnbot
+      Where spawnbot_a
+			Name "6a_b"
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 2
+			WaitBetweenSpawns 15
+      WaitForAllDead "6a_a"
+			TotalCurrency 100
+			TFBot
+			{
+        Class Demoman
+			  ClassIcon demo_giant
+			  Name "Captain Frostbeard"
+        Health 12000
+
+        EventChangeAttributes
+			  {
+          Default
+          {
+            Attributes IgnoreFlag
+            BehaviorModifiers push
+            Tag bot_gatebot
+
+            Skill Expert
+			      Item "The Loose Cannon"
+			      Item "The Splendid Screen"
+			      WeaponRestrictions PrimaryOnly
+			      Attributes MiniBoss
+            Attributes UseBossHealthBar
+            Item "The Bolted Bicorne"
+
+			      ItemAttributes
+			      {
+			      	ItemName "The Loose Cannon"
+			      	"damage bonus" 0.8
+			      	"grenade launcher mortar mode" 0
+			      }      
+            CharacterAttributes
+            {
+                "move speed bonus" 0.5
+                "damage force reduction" 0.5
+                "airblast vulnerability multiplier" 0.2
+                "override footstep sound set" 4
+                "dmg taken from fire increased" 3
+                "charge recharge rate increased" 1.5
+            }
+          }
+          RevertGateBotsBehavior
+          {
+            Skill Expert
+			      Item "The Loose Cannon"
+			      Item "The Splendid Screen"
+			      WeaponRestrictions PrimaryOnly
+			      Attributes MiniBoss
+            Attributes UseBossHealthBar
+            Item "The Bolted Bicorne"
+
+			      ItemAttributes
+			      {
+			      	ItemName "The Loose Cannon"
+			      	"damage bonus" 0.8
+			      	"grenade launcher mortar mode" 0
+			      }      
+            CharacterAttributes
+            {
+                "move speed bonus" 0.5
+                "damage force reduction" 0.5
+                "airblast vulnerability multiplier" 0.2
+                "override footstep sound set" 4
+                "dmg taken from fire increased" 3
+                "charge recharge rate increased" 1.5
+            }
+          }
+        }
+			}
+		}
+    WaveSpawn //Buccaneers Right Support
+		{
+			Where spawnbot_right
+      Where spawnbot_right_a
+			TotalCount 32
+			MaxActive 4
+			SpawnCount 4
+			WaitBeforeStarting 15
+			WaitBetweenSpawns 10
+      WaitForallDead "6a_a"
+			TotalCurrency 0
+      Support 1
+			TFBot
+			{
+				Template FW_Demoman_Turner
+        ItemAttributes
+        {
+            ItemName "The Persian Persuader"
+            "critboost on kill" 0
+        }
+			}
+		}
+    WaveSpawn //Buccaneers Left Support
+		{
+			Where spawnbot_left
+      Where spawnbot_left_a
+			TotalCount 32
+			MaxActive 4
+			SpawnCount 4
+			WaitBeforeStarting 15
+			WaitBetweenSpawns 10
+      WaitForallDead "6a_a"
+			TotalCurrency 0
+      Support 1
+			TFBot
+			{
+				Template FW_Demoman_Turner
+        ItemAttributes
+        {
+            ItemName "The Persian Persuader"
+            "critboost on kill" 0
+        }
+			}
+		}
+	}
+}
