@@ -1,0 +1,3714 @@
+//MAXIMUM AMOUNT OF SPAWNED BOTS IS 22 (26 if no spectators)
+#base robot_giant.pop
+#base robot_standard.pop
+
+WaveSchedule
+{
+	StartingCurrency 900 //starting with 900 currency!
+	RespawnWaveTime 7
+	CanBotsAttackWhileInSpawnRoom no
+	Advanced 1
+	  ////////////////////////////////////////////////
+	 ////////////////// MISSIONS ////////////////////
+	////////////////////////////////////////////////
+	Mission //Sentry busters for all waves
+	{
+		Objective DestroySentries
+		Where robot_spawn_buster
+		InitialCooldown 10
+		CooldownTime 30
+		TFBot
+		{
+			Class Demoman
+			Name "Sentry Buster"
+			Skill Expert
+			Health 2500
+			Item "The Ullapool Caber"
+			WeaponRestrictions MeleeOnly
+			ClassIcon sentry_buster
+			Attributes MiniBoss
+			Attributes DisableDodge
+			Scale 1.75
+			CharacterAttributes
+			{
+				"move speed bonus" 2
+				"damage force reduction" 0.5
+				"airblast vulnerability multiplier" 0.5
+				"override footstep sound set" 7
+				"cannot be backstabbed" 1
+			}
+		}
+	}
+	Mission	// Snipers Wave 2, 3
+	{
+		Objective Sniper
+
+		InitialCooldown 45
+		Where robot_spawn_sniper
+		BeginAtWave 2
+		RunForThisManyWaves 3
+		CooldownTime 45
+		DesiredCount 2
+
+		TFBot
+		{
+			Template T_TFBot_Sniper
+			Skill Hard
+			Item "The Doublecross-Comm"
+			CharacterAttributes
+			{
+				"damage bonus"	1.0
+			}
+		}
+	}
+	Mission	// Snipers Wave 5 and 6
+	{
+		Objective Sniper
+
+		InitialCooldown 30
+		Where robot_spawn_sniper
+		BeginAtWave 5
+		RunForThisManyWaves 2
+		CooldownTime 45
+		DesiredCount 3
+
+		TFBot
+		{
+			Template T_TFBot_Sniper
+			Skill Hard
+			Item "The Doublecross-Comm"
+			CharacterAttributes
+			{
+				"damage bonus"	1.0
+			}
+		}
+	}
+	Mission // Engineer wave 4
+	{
+		Objective Engineer  
+
+		InitialCooldown 70
+		Where robot_spawn_02
+		BeginAtWave 4
+		RunForThisManyWaves 2
+		CooldownTime 60
+		DesiredCount 1
+
+		TFBot
+		{
+			Template T_TFBot_Engineer_Sentry_Teleporter
+			TeleportWhere robot_spawn_02
+			Attributes TeleportToHint
+			Health 600
+		}
+	}
+	Mission // Engineer wave 5
+	{
+		Objective Engineer  
+
+		InitialCooldown 60
+		Where robot_spawn_02
+		BeginAtWave 5
+		RunForThisManyWaves 1
+		CooldownTime 25
+		DesiredCount 2
+
+		TFBot
+		{
+			Template T_TFBot_Engineer_Sentry_Teleporter
+			TeleportWhere robot_spawn_02
+			Attributes TeleportToHint
+			Health 600
+		}
+	}
+
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	 ////////////////// WAVE 001 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	Wave //1200 credits this wave, train is on the full wave
+	{
+		Checkpoint Yes
+		WaitWhenDone 60
+		Sound "Announcer.IncomingMob"
+		InitWaveOutput
+		{
+			Target tf_mvm_rules
+			Action RunScriptCode
+			Param "EntFire(`bp_s1_enable`,`Trigger`); 
+					EntFire(`bp_s2_enable`,`Trigger`); 
+					EntFire(`bp_s3_enable`,`Trigger`);
+					EntFire(`bp_G1_enable`,`Trigger`);
+					EntFire(`bp_G2_enable`,`Trigger`);"
+		}
+		StartWaveOutput
+		{
+			Target wave_start_relay //Target map relay
+			Action Trigger // Trigger it
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action Trigger
+		}
+		  ///////////////////////////////////
+		 ////////SUPPORT BOMB SCOUTS////////
+		///////////////////////////////////
+		WaveSpawn // scouts melee support - MISSION
+		{
+			TotalCurrency 30
+			Where robot_spawn_01
+			TotalCount 30
+			MaxActive 1
+			SpawnCount 1
+			WaitBetweenSpawnsAfterDeath 20
+			WaitBeforeStarting 4
+			Support Limited
+			RandomChoice
+			{	
+				Squad
+				{
+					TFBot
+					{
+						Class Scout
+					}
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////Subwave 1//////////////////
+		///////////////////////////////////
+		WaveSpawn //basic scouts
+		{
+			Name "scoutw1s1"
+			TotalCurrency 80
+			Where robot_spawn_01
+			TotalCount 16
+			MaxActive 8
+			SpawnCount 8
+			WaitBetweenSpawns 16
+			WaitBeforeStarting 8
+			TFBot
+			{
+				Class Scout
+			}
+		}
+		WaveSpawn //demosquitos
+		{
+			Name "squitow1s1"
+			Where robot_spawn_03
+			TotalCount 40
+			MaxActive 8
+			SpawnCount 8
+			WaitBeforeStarting 18
+			WaitBetweenSpawns 6
+			TotalCurrency 80
+			Support 1
+			TFBot
+			{
+				Tag "Main"
+				Class Demoman
+				ClassIcon "demosquito"
+				Health 150
+				Scale 0.65
+				Skill Easy
+				Name "Demosquito"
+				Item "The Half-Zatoichi"
+				Item "The Tide Turner"
+				WeaponRestrictions   MeleeOnly
+				BehaviorModifiers Mobber
+				Attributes IgnoreFlag
+				Attributes RemoveOnDeath
+				CharacterAttributes
+				{
+					"move speed bonus"	1.75
+					"voice pitch scale" 1.75
+					"damage bonus" 0.1
+				}
+				ItemAttributes
+				{
+					ItemName "The Tide Turner"
+					"charge recharge rate increased" 10000.0
+					"Attack not cancel charge" 1
+					"charge impact damage increased" 0.1
+					"charge time increased" 25.0
+					"dmg taken from fire reduced" 0.25
+					"dmg bonus vs buildings" 20.0
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////Subwave 2//////////////////
+		///////////////////////////////////
+		WaveSpawn // Packet losers, just them
+		{
+			Name "losersw1s2"
+			TotalCurrency 150
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 15
+			MaxActive 5
+			SpawnCount 5
+			WaitBetweenSpawns 4
+			WaitBeforeStarting 12
+			WaitForAllDead "scoutw1s1"
+			TFBot
+			{
+				Tag "Main"
+				Name "Packet Loser"
+				Class Demoman
+				ClassIcon "packet_loser_giant"
+				Skill Easy
+				Item "Scotsman's Stove Pipe"
+				Item "The Loch-N-Load"
+				WeaponRestrictions PrimaryOnly
+				Attributes HoldFireUntilFullReload
+				Health 250
+				CharacterAttributes
+				{
+					"cancel falling damage" 1
+					"airblast vulnerability multiplier" 0.5
+				}
+				ItemAttributes
+				{
+					ItemName    "The Loch-N-Load"
+					"projectile spread angle penalty" 22
+					"clip size upgrade atomic" 14
+					"fire rate bonus" 0.1
+					"faster reload rate" 0.2
+				}		
+			}
+		}
+		  ///////////////////////////////////
+		 ////////Subwave 3//////////////////
+		///////////////////////////////////		
+		WaveSpawn //Minor League Milkers
+		{
+			Name "milkw1s3"
+			WaitForAllDead "losersw1s2"
+			Where robot_spawn_01
+			TotalCount 80
+			MaxActive 8
+			SpawnCount 8
+			WaitBeforeStarting 24
+			WaitBetweenSpawns 10
+			TotalCurrency 80
+			Support 1
+			TFBot
+			{
+				Class Scout
+				Name "Minor League Milker"
+				ClassIcon "calcium_scout"
+				WeaponRestrictions SecondaryOnly
+				Scale 0.9
+				Item "The Milkman"
+				Item "Mad Milk"
+				ItemAttributes
+				{
+					ItemName "TF_WEAPON_SCATTERGUN"
+					"override projectile type" 7
+					"fire rate penalty" 2000
+				}
+				ItemAttributes
+				{
+					ItemName "Mad Milk"
+					"effect bar recharge rate increased" 0.1
+				}
+				CharacterAttributes
+				{
+					"rage giving scale" 2.0
+					"move speed bonus" 1.1
+					
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name "cadetsw1s3"
+			WaitForAllDead "losersw1s2"
+			Where robot_spawn_02
+			TotalCount 15
+			MaxActive 5
+			SpawnCount 5
+			WaitBeforeStarting 16
+			WaitBetweenSpawns 10
+			TotalCurrency 300
+			TFBot
+			{
+				Tag "flank_intel_left"
+				Template T_TFBot_Soldier_Extended_Concheror
+				Name "Calcium Cadet"
+				Item "The Black Box"
+				Health 1500
+				Attributes MiniBoss
+				Scale 1.25
+				ClassIcon "calcium_soldier"
+				CharacterAttributes
+				{
+					"move speed bonus" 0.3
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////Subwave 4//////////////////
+		///////////////////////////////////
+		  /////////////////////////////////
+		 //////DUMMY BOT RAVINE TELE//////
+		/////////////////////////////////
+		WaveSpawn // ravine icon
+		{
+			StartWaveOutput
+			{
+				Target ravine_teleport_enable
+				Action Trigger
+			}
+			TotalCurrency 0
+			Where robot_spawn_dummy
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 1
+			Support 1
+			TFBot
+			{
+				Class Scout
+				ClassIcon "ravine_teleporter"
+				Attributes "MiniBoss"
+				Attributes IgnoreFlag
+				CharacterAttributes
+				{
+					"move speed bonus" 0.0
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name "commandersw1s4_1"
+			WaitForAllDead "cadetsw1s3"
+			Where robot_spawn_01
+			TotalCount 4
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 16
+			WaitBetweenSpawns 30
+			TotalCurrency 240
+			Squad
+			{
+				TFBot
+				{
+					Template T_TFBot_Soldier_Extended_Concheror
+					Name "Calcium Commander"
+					Item "The Black Box"
+					Health 6000
+					Attributes MiniBoss
+					Scale 1.5
+					Attributes AlwaysCrit
+					ClassIcon "calcium_soldier_giant"
+					WeaponRestrictions PrimaryOnly
+					CharacterAttributes
+					{
+						"move speed bonus" 0.2
+						"airblast vulnerability multiplier" 0.1
+					}
+					ItemAttributes
+					{
+						ItemName "The Black Box"
+						"crits_become_minicrits" 1
+						"heal on kill" 2500
+					}
+				}
+				TFBot
+				{
+					Name "Mega-Quick-Fix Medic"
+					Class Medic
+					Health 4000
+					Skill Expert
+					Scale 1.3
+					WeaponRestrictions "SecondaryOnly"
+					Attributes MiniBoss
+					Attributes  SpawnWithFullCharge
+					Item "The Quick-Fix"
+					CharacterAttributes
+					{
+						"move speed bonus" 0.2
+						"airblast vulnerability multiplier" 0.1
+						"damage force reduction" 0.1
+					}
+					ItemAttributes
+					{
+						ItemName "The Quick-Fix"
+						"ubercharge rate bonus" 0.1
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name "commandersw1s4_2"
+			WaitForAllDead "cadetsw1s3"
+			Where robot_spawn_02
+			TotalCount 8
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 16
+			WaitBetweenSpawns 30
+			TotalCurrency 240
+			Squad
+			{
+				TFBot
+				{
+					Template T_TFBot_Soldier_Extended_Concheror
+					Name "Calcium Commander"
+					Item "The Black Box"
+					Health 6000
+					Attributes MiniBoss
+					Scale 1.5
+					Attributes AlwaysCrit
+					ClassIcon "calcium_soldier_giant"
+					WeaponRestrictions PrimaryOnly
+					CharacterAttributes
+					{
+						"move speed bonus" 0.2
+					}
+					ItemAttributes
+					{
+						ItemName "The Black Box"
+						"crits_become_minicrits" 1
+						"heal on kill" 2500
+					}
+				}
+				TFBot
+				{
+					Name "Mega-Quick-Fix Medic"
+					Class Medic
+					Health 4000
+					Skill Expert
+					Scale 1.3
+					WeaponRestrictions "SecondaryOnly"
+					Attributes MiniBoss
+					Attributes  SpawnWithFullCharge
+					Item "The Quick-Fix"
+					CharacterAttributes
+					{
+						"move speed bonus" 0.2
+						"airblast vulnerability multiplier" 0.1
+						"damage force reduction" 0.1
+					}
+					ItemAttributes
+					{
+						ItemName "The Quick-Fix"
+						"ubercharge rate bonus" 0.1
+					}
+				}
+			}
+		}
+	}
+
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	 ////////////////// WAVE 002 (old wave 3) ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	Wave //1000 credits this wave (BREATHER WAVE, SHORTER)
+	{
+		Checkpoint Yes
+		WaitWhenDone 60
+		Sound "Announcer.IncomingMob"
+		InitWaveOutput
+		{
+			Target tf_mvm_rules
+			Action RunScriptCode
+			Param "EntFire(`bp_s1_enable`,`Trigger`); 
+					EntFire(`bp_s2_enable`,`Trigger`);
+					EntFire(`bp_s3_enable`,`Trigger`); 
+					EntFire(`bp_G1_enable`,`Trigger`);
+					EntFire(`bp_G2_enable`,`Trigger`);
+					EntFire(`bp_G3_enable`,`Trigger`);
+					EntFire(`bp_G7_enable`,`Trigger`);
+					EntFire(`bp_t1_enable`,`Trigger`)"
+		}
+		StartWaveOutput
+		{
+			Target wave_start_relay //Target map relay
+			Action Trigger // Trigger it
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action Trigger
+		}
+	      ///////////////////////////////////
+		 ////////SUPPORT BOMB SCOUTS////////
+		///////////////////////////////////
+		WaveSpawn // scouts melee support - MISSION
+		{
+			TotalCurrency 27
+			Where robot_spawn_01
+			TotalCount 27
+			MaxActive 1
+			SpawnCount 1
+			WaitBetweenSpawnsAfterDeath 20
+			WaitBeforeStarting 4
+			Support Limited
+			RandomChoice
+			{	
+				Squad
+				{
+					TFBot
+					{
+						Class Scout
+					}
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////DUMMY BOT RAVINE TELE//////
+		///////////////////////////////////
+		WaveSpawn // ravine icon
+		{
+			StartWaveOutput
+			{
+				Target ravine_teleport_enable
+				Action Trigger
+			}
+			TotalCurrency 28
+			Where robot_spawn_dummy
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 1
+			Support 1
+			TFBot
+			{
+				Class Scout
+				ClassIcon "ravine_teleporter"
+				Attributes "MiniBoss"
+				Attributes IgnoreFlag
+				CharacterAttributes
+				{
+					"move speed bonus" 0.0
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////SubWave 1//////////////////
+		///////////////////////////////////
+		WaveSpawn
+		{
+			TotalCount 0
+			SpawnCount 0
+			DoneOutput //disabling train
+			{
+				Target "train_disable"
+				Action Trigger
+			}
+		}
+		WaveSpawn //Intro Scouts
+		{
+			Name "introScouts"
+			TotalCurrency 63
+			Where robot_spawn_01
+			TotalCount 21
+			MaxActive 7
+			SpawnCount 7
+			WaitBetweenSpawns 16
+			WaitBeforeStarting 1
+			TFBot
+			{
+				Class Scout
+			}
+		}
+		WaveSpawn //Intro Heavy
+		{
+			Name "introHeavies"
+			TotalCurrency 96
+			Where robot_spawn_02
+			TotalCount 24
+			MaxActive 8
+			SpawnCount 8
+			WaitBetweenSpawns 16
+			WaitBeforeStarting 6
+			TFBot
+			{
+				Tag "flank_sewer_spiral"
+				Class Heavy
+			}
+		}
+		  ///////////////////////////////////
+		 ////////SubWave 2//////////////////
+		///////////////////////////////////
+		WaveSpawn // Milking medic supports until end of wave
+		{
+			Name "milk_medics"
+			TotalCurrency 192
+			Where robot_spawn_03
+			TotalCount 48
+			MaxActive 12
+			SpawnCount 3
+			WaitBetweenSpawns 15
+			WaitBeforeStarting 1
+			WaitForAllDead "introHeavies"
+			Support 1
+			Squad
+			{
+				ShouldPreserveSquad 1
+				TFBot
+				{
+					Class Medic
+					Item "The Blutsauger"
+					WeaponRestrictions PrimaryOnly
+					Health 350
+					Scale 1.25
+					Name "Doctor Dew"
+					ClassIcon "doctor_dew"
+					ItemAttributes
+					{
+						ItemName "The Blutsauger"
+						"mad milk syringes" 1
+						"clip size bonus" 0.75
+					}
+					CharacterAttributes
+					{
+						"move speed bonus" 0.65
+					}
+				}
+				TFBot
+				{
+					Class Medic
+					WeaponRestrictions SecondaryOnly
+					Item "The Quick-Fix"
+					Health 200
+					Name "Quick-Fix Medic"
+					ItemAttributes
+					{
+						ItemName "The Quick-Fix"
+						"ubercharge rate bonus" 0.1
+					}
+				}
+				TFBot
+				{
+					Class Medic
+					WeaponRestrictions SecondaryOnly
+					Item "The Quick-Fix"
+					Health 200
+					Name "Quick-Fix Medic"
+					ItemAttributes
+					{
+						ItemName "The Quick-Fix"
+						"ubercharge rate bonus" 0.1
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name "squad with doctor deadload"
+			TotalCurrency 300
+			Where robot_spawn_02
+			TotalCount 6
+			MaxActive 4
+			SpawnCount 2
+			WaitBetweenSpawns 32
+			WaitBeforeStarting 20
+			WaitForAllDead "introHeavies"
+			Squad
+			{
+				TFBot //Sergeant Deadload
+				{
+					Tag "flank_lower_bridge_intel_left"
+					Name "Sergeant Deadload"
+					Class Soldier
+					ClassIcon "deadload"
+					Skill Expert
+					Item "The Original"
+					Item "Breach and Bomb"
+					WeaponRestrictions PrimaryOnly
+					Health 10000
+					Attributes MiniBoss
+					Attributes AlwaysCrit
+					Attributes AlwaysFireWeapon
+					Scale 1.75
+					CharacterAttributes
+					{
+						"move speed bonus" 0.35
+						"airblast vulnerability multiplier" 0.3
+						"override footstep sound set" 7
+						"no self blast dmg" 1
+					}
+					ItemAttributes
+					{
+						ItemName "The Original"
+						"Projectile speed decreased" 0.5
+						"damage bonus" 3.0
+						"Reload time increased" 15.0
+						"fire rate penalty" 0.08
+						"use large smoke explosion" 1
+						"Blast radius increased" 1.75
+						"dmg bonus vs buildings" 0.5
+					}
+					ItemAttributes
+					{
+						ItemName "Breach and Bomb"
+						"set item tint rgb" 5801378
+					}
+				}
+				TFBot //Mega quick fix
+				{
+					Name "Giant-Quick-Fix Medic"
+					Class Medic
+					Health 7500
+					Skill Expert
+					Scale 1.65
+					WeaponRestrictions "SecondaryOnly"
+					Attributes MiniBoss
+					Attributes  SpawnWithFullCharge
+					Item "The Quick-Fix"
+					Tag "flank_lower_bridge_intel_left"
+					CharacterAttributes
+					{
+						"move speed bonus" 0.35
+						"airblast vulnerability multiplier" 0.1
+						"damage force reduction" 0.1
+					}
+					ItemAttributes
+					{
+						ItemName "The Quick-Fix"
+						"ubercharge rate bonus" 0.1
+					}
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////SubWave 3//////////////////
+		///////////////////////////////////
+		WaveSpawn
+		{
+			TotalCurrency 30
+			Name "giant_scout_runnersw3s3"
+			Where robot_spawn_01
+			TotalCount 6
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 12
+			WaitBetweenSpawns 20
+			WaitForAllDead "squad with doctor deadload"
+			TFBot
+			{
+				Name "Giant Scout"
+				Class Scout
+				Health 1500
+				Skill Hard
+				WeaponRestrictions PrimaryOnly
+				Scale 1.75
+				Tag "flank_sewer_stairs"
+				ClassIcon "scout_giant_fast"
+				Attributes MiniBoss
+				Item "Fuel Injector"
+				CharacterAttributes
+				{
+					"move speed bonus" 1.25
+					"override footstep sound set" 5
+					"airblast vulnerability multiplier" 0.7
+				}
+			}
+		}
+		WaveSpawn //MiniGunners
+		{
+			Name "minigunsw3s3"
+			WaitForAllDead "squad with doctor deadload"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 16
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 36
+			WaitBetweenSpawns 12
+			TotalCurrency 64
+			TFBot
+			{
+				Tag "flank_sewer_spiral"
+				Name "Mini-Gunner"
+				Class Heavy
+				ClassIcon "minigunner"
+				Skill Hard
+				WeaponRestrictions "PrimaryOnly"
+				Health 200
+				Scale 0.8
+				CharacterAttributes
+				{
+					"move speed bonus" 1.35
+					"airblast vulnerability multiplier" 0.5
+				}
+			}
+		}
+		WaveSpawn //Private Deadweights
+		{
+			Name "deadweight squad"
+			WaitForAllDead "squad with doctor deadload"
+			Where robot_spawn_02
+			TotalCount 10
+			MaxActive 10
+			SpawnCount 5
+			WaitBeforeStarting 20
+			WaitBetweenSpawns 10
+			TotalCurrency 200
+			Squad
+			{
+				TFBot
+				{
+					Tag "Main"
+					Name "Private Deadweight"
+					Class Soldier
+					ClassIcon "deadweight"
+					Skill Expert
+					Item "The Original"
+					WeaponRestrictions PrimaryOnly
+					Health 2000
+					Attributes MiniBoss
+					Attributes AlwaysCrit
+					Attributes AlwaysFireWeapon
+					CharacterAttributes
+					{
+						"no self blast dmg" 1
+						"move speed bonus" 0.4
+					}
+					ItemAttributes
+					{
+						ItemName "The Original"
+						"Projectile speed decreased" 0.75
+						"damage bonus" 1.5
+						"Reload time increased" 2.0
+						"fire rate penalty" 0.40
+						"Blast radius increased" 1.25
+						"dmg bonus vs buildings" 0.5
+					}
+				}
+			}
+		}
+	}
+	
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	 ////////////////// WAVE 003 (old wave 2) ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	Wave //1100 credits this wave
+	{
+		Checkpoint Yes
+		WaitWhenDone 60
+		Sound "Announcer.IncomingMob"
+		InitWaveOutput
+		{
+			Target tf_mvm_rules
+			Action RunScriptCode
+			Param "EntFire(`bp_s1_enable`,`Trigger`); 
+					EntFire(`bp_s2_enable`,`Trigger`); 
+					EntFire(`bp_s3_enable`,`Trigger`);
+					EntFire(`bp_G1_enable`,`Trigger`);
+					EntFire(`bp_G4_enable`,`Trigger`);
+					EntFire(`bp_G5_enable`,`Trigger`);
+					EntFire(`bp_G7_enable`,`Trigger`);
+					EntFire(`bp_t1_enable`,`Trigger`);"
+		}
+		StartWaveOutput
+		{
+			Target wave_start_relay //Target map relay
+			Action Trigger // Trigger it
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action Trigger
+		}
+		  ///////////////////////////////////
+		 ////////SUPPORT BOMB SCOUTS////////
+		///////////////////////////////////
+		WaveSpawn // scouts melee support - MISSION
+		{
+			TotalCurrency 60
+			Where robot_spawn_01
+			TotalCount 25
+			MaxActive 1
+			SpawnCount 1
+			WaitBetweenSpawnsAfterDeath 20
+			WaitBeforeStarting 4
+			Support Limited
+			RandomChoice
+			{	
+				Squad
+				{
+					TFBot
+					{
+						Class Scout
+					}
+				}
+			}
+		}
+	      ///////////////////////////////////
+		 ////////SubWave 1//////////////////
+		///////////////////////////////////
+		WaveSpawn
+		{
+			TotalCount 0
+			SpawnCount 0
+			StartWaveOutput //disabling train
+			{
+				Target "train_disable"
+				Action Trigger
+			}
+			TotalCurrency 32
+			Name "giant_scout_runnersw2s1_1"
+			Where robot_spawn_01
+			TotalCount 8
+			MaxActive 2
+			SpawnCount 1
+			WaitBeforeStarting 24
+			WaitBetweenSpawns 12
+			TFBot
+			{
+				Name "Giant Scout"
+				Class Scout
+				Health 750
+				Skill Hard
+				Attributes MiniBoss
+				WeaponRestrictions PrimaryOnly
+				Scale 1.75
+				Tag "flank_lower_bridge"
+				ClassIcon "scout_giant_fast"
+				Item "Fuel Injector"
+				CharacterAttributes
+				{
+					"move speed bonus" 1.10
+					"override footstep sound set" 5
+					"airblast vulnerability multiplier" 1.2
+				}
+			}
+		}
+		WaveSpawn
+		{
+			TotalCurrency 32
+			Name "giant_scout_runnersw2s1_2"
+			Where robot_spawn_02
+			TotalCount 8
+			MaxActive 2
+			SpawnCount 1
+			WaitBeforeStarting 12
+			WaitBetweenSpawns 12
+			TFBot
+			{
+				Name "Giant Scout"
+				Class Scout
+				Health 750
+				Skill Hard
+				Attributes MiniBoss
+				WeaponRestrictions PrimaryOnly
+				Scale 1.75
+				ClassIcon "scout_giant_fast"
+				Item "Fuel Injector"
+				CharacterAttributes
+				{
+					"move speed bonus" 1.10
+					"override footstep sound set" 5
+					"airblast vulnerability multiplier" 1.2
+				}
+			}
+		}
+		WaveSpawn //Fat scouts below
+		{
+			Name "fat_scoutsw2s1_1"
+			Where robot_spawn_02
+			TotalCount 24
+			MaxActive 8
+			SpawnCount 4
+			WaitBeforeStarting 12
+			WaitBetweenSpawns 12
+			TotalCurrency 72
+			TFBot
+			{
+				Tag "flank_sewer_stairs"
+				Name "Chonk Trooper"
+				Class Heavy
+				Skill Hard
+				WeaponRestrictions "SecondaryOnly"
+				Health 400
+				ClassIcon "heavy_shotgun_fast"
+				CharacterAttributes
+				{
+					"move speed bonus" 1.2
+				}
+			}
+		}
+		WaveSpawn //Fat scouts from top
+		{
+			Name "fat_scoutsw2s1_2"
+			Where robot_spawn_02
+			TotalCount 24
+			MaxActive 8
+			SpawnCount 4
+			WaitBeforeStarting 12
+			WaitBetweenSpawns 12
+			TotalCurrency 72
+			TFBot
+			{
+				Tag "flank_sewer_stairs"
+				Name "Chonk Trooper"
+				Class Heavy
+				Skill Hard
+				WeaponRestrictions "SecondaryOnly"
+				Health 400
+				ClassIcon "heavy_shotgun_fast"
+				CharacterAttributes
+				{
+					"move speed bonus" 1.2
+				}
+			}
+		}
+	      ///////////////////////////////////
+		 ////////Subwave 2//////////////////
+		///////////////////////////////////
+		WaveSpawn //hopper botter support until the end of the wave
+		{
+			Name "hoppersw2s4"
+			WaitForAllSpawned "giant_scout_runnersw2s1_2"
+			Where robot_spawn_01
+			TotalCount 20
+			MaxActive 8
+			SpawnCount 4
+			WaitBeforeStarting 36
+			WaitBetweenSpawns 16
+			TotalCurrency 40
+			Support 1
+			TFBot
+			{
+				Item "The Bubble Pipe"
+				Item "The Moonman Backpack"
+				Item "The Phlogistinator"
+				Attributes AutoJump
+				AutoJumpMin 3.0
+				AutoJumpMax 4.0
+				Tag "flank_intel_left"
+				Class Pyro
+				ClassIcon "hopper_botter"
+				Skill Hard
+				Health 350
+				WeaponRestrictions    PrimaryOnly
+				Attributes  SpawnWithFullCharge
+				Attributes AlwaysFireWeapon
+				Name "Hopper Botter"
+				Scale 1.15
+				CharacterAttributes
+				{
+					"increased jump height" 5.0
+					"cancel falling damage" 1
+					"move speed bonus" 1.6
+					"damage force increase" 12.0
+				}
+				ItemAttributes
+				{
+					ItemName    "The Phlogistinator"
+					"airblast disabled"    0
+					"flame_speed" 900
+					"flame_spread_degree" 1
+					"damage bonus" 3.0
+				}					
+			}
+		}
+		WaveSpawn //grid techs with help, kill all to turn off the ravine teleporter
+		{
+			Name "gridtechsw1s2_1"
+			WaitForAllSpawned "giant_scout_runnersw2s1_2"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 4
+			MaxActive 2
+			SpawnCount 2
+			WaitBeforeStarting 24
+			WaitBetweenSpawns 4
+			TotalCurrency 16
+			StartWaveOutput
+			{
+				Target ravine_teleport_enable
+				Action Trigger
+			}
+			DoneOutput
+			{
+				Target ravine_teleport_disable
+				Action Trigger
+			}
+			Squad
+			{
+				ShouldPreserveSquad 1
+				TFBot
+				{
+					Class Scout
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "grid_technician"
+					Health 1250
+					Scale 1.15
+					Skill Hard
+					Name "Grid Technician"
+					Attributes MiniBoss
+					WeaponRestrictions MeleeOnly
+					BehaviorModifiers Push
+					CharacterAttributes
+					{
+						"move speed bonus" 0.65
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_WRENCH"
+						"damage bonus" 1.5
+						"melee range multiplier" 1.25
+					}
+				}
+			}
+		}
+		WaveSpawn //fire wallers
+		{
+			Name "fire_wallerw2s2"
+			WaitForAllDead "giant_scout_runnersw2s1_2"
+			Where robot_spawn_01
+			TotalCount 12
+			MaxActive 6
+			SpawnCount 2
+			WaitBeforeStarting 32
+			WaitBetweenSpawns 24
+			TotalCurrency 240
+			TFBot
+			{
+				Item "The Huo Long Heatmaker"
+				Item "The Dragonborn Helmet"
+				Class Heavy
+				ClassIcon "heavy_heater"
+				Skill Hard
+				Health 6500
+				WeaponRestrictions PrimaryOnly
+				Name "Fire Waller"
+				Scale 1.6
+				Attributes MiniBoss
+				CharacterAttributes
+				{
+					"move speed bonus" 0.35
+					"airblast vulnerability multiplier" 0.25
+					"damage force reduction" 0.25
+					"override footstep sound set" 7
+				}
+				ItemAttributes
+				{
+					ItemName "The Huo Long Heatmaker"
+					"fire rate bonus with reduced health" 2.0
+				}
+			}
+		}
+		WaveSpawn //35000HP tank
+		{			
+			Name "tankw2s2"
+			TotalCount 1
+			WaitBeforeStarting 32								
+			TotalCurrency 128
+			WaitForAllDead "giant_scout_runnersw2s1_1"
+			StartWaveOutput
+			{
+				Target train_disable
+				Action Trigger
+			}
+			Tank
+			{
+				Health 30000
+				Speed 60
+				Name "Tank"
+				StartingPathTrackNode "tank_path01"
+				OnBombDroppedOutput                       
+				{
+					Target "tank_drop_relay" 	
+					Action Trigger
+				}
+			}			
+		}
+	      ///////////////////////////////////
+		 ////////Subwave 3//////////////////
+		///////////////////////////////////
+		WaveSpawn
+		{
+			TotalCount 0
+			SpawnCount 0
+			WaitForAllDead "fire_wallerw2s2"
+			DoneOutput //enabling train
+			{
+				Target "train_enable"
+				Action Trigger
+			}
+		}
+		WaveSpawn //more grid techs, this time with crits, no other changes
+		{
+			Name "gridtechsw1s2_1"
+			WaitForAllDead "fire_wallerw2s2"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 4
+			MaxActive 2
+			SpawnCount 2
+			WaitBeforeStarting 24
+			WaitBetweenSpawns 16
+			TotalCurrency 16
+			StartWaveOutput
+			{
+				Target ravine_teleport_enable
+				Action Trigger
+			}
+			DoneOutput
+			{
+				Target ravine_teleport_disable
+				Action Trigger
+			}
+			Squad
+			{
+				ShouldPreserveSquad 1
+				TFBot
+				{
+					Class Scout
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "grid_technician"
+					Health 1250
+					Scale 1.15
+					Skill Hard
+					Name "Grid Technician"
+					Attributes MiniBoss
+					WeaponRestrictions MeleeOnly
+					BehaviorModifiers Push
+					Attributes AlwaysCrit
+					CharacterAttributes
+					{
+						"move speed bonus" 0.65
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_WRENCH"
+						"damage bonus" 1.5
+						"melee range multiplier" 1.25
+					}
+				}
+			}
+		}
+		WaveSpawn //Min-gineers
+		{
+			Name "gridtechsw1s2_1"
+			WaitForAllDead "fire_wallerw2s2"
+			Where robot_spawn_01
+			TotalCount 36
+			MaxActive 12
+			SpawnCount 6
+			WaitBeforeStarting 32
+			WaitBetweenSpawns 16
+			TotalCurrency 72
+			Squad
+			{
+				ShouldPreserveSquad 1
+				TFBot
+				{
+					Class Scout
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "mingineer"
+					Health 750
+					Scale 0.75
+					Skill Hard
+					Name "Mingineer"
+					WeaponRestrictions PrimaryOnly
+					BehaviorModifiers Push
+					CharacterAttributes
+					{
+						"move speed bonus" 1.10
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_SHOTGUN_PRIMARY"
+						"bullets per shot bonus" 1.5
+						"dmg falloff increased" 0.5
+					}
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "mingineer"
+					Health 750
+					Scale 0.75
+					Skill Hard
+					Name "Mingineer"
+					WeaponRestrictions PrimaryOnly
+					BehaviorModifiers Push
+					CharacterAttributes
+					{
+						"move speed bonus" 1.10
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_SHOTGUN_PRIMARY"
+						"bullets per shot bonus" 1.5
+						"dmg falloff increased" 0.5
+					}
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "mingineer"
+					Health 750
+					Scale 0.75
+					Skill Hard
+					Name "Mingineer"
+					WeaponRestrictions PrimaryOnly
+					BehaviorModifiers Push
+					CharacterAttributes
+					{
+						"move speed bonus" 1.10
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_SHOTGUN_PRIMARY"
+						"bullets per shot bonus" 1.5
+						"dmg falloff increased" 0.5
+					}
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "mingineer"
+					Health 750
+					Scale 0.75
+					Skill Hard
+					Name "Mingineer"
+					WeaponRestrictions PrimaryOnly
+					BehaviorModifiers Push
+					CharacterAttributes
+					{
+						"move speed bonus" 1.10
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_SHOTGUN_PRIMARY"
+						"bullets per shot bonus" 1.5
+						"dmg falloff increased" 0.5
+					}
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "mingineer"
+					Health 750
+					Scale 0.75
+					Skill Hard
+					Name "Mingineer"
+					WeaponRestrictions PrimaryOnly
+					BehaviorModifiers Push
+					CharacterAttributes
+					{
+						"move speed bonus" 1.10
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_SHOTGUN_PRIMARY"
+						"bullets per shot bonus" 1.5
+						"dmg falloff increased" 0.5
+					}
+				}
+			}
+		}
+	      ///////////////////////////////////
+		 ////////Subwave 4//////////////////
+		///////////////////////////////////
+		WaveSpawn
+		{
+			Name "direct_hit_squadw2s4"
+			WaitForAllDead "gridtechsw1s2_1"
+			Where robot_spawn_02
+			TotalCount 10
+			MaxActive 8
+			SpawnCount 2
+			WaitBeforeStarting 8
+			WaitBetweenSpawns 24
+			TotalCurrency 320
+			TFBot //BIG direct hit boss
+			{
+				Tag "Main"
+				Name "Direct Missler"
+				Class Soldier
+				ClassIcon "direct_missler"
+				Skill Hard
+				Item "The Direct Hit"
+				Item "Stainless Pot"
+				WeaponRestrictions PrimaryOnly
+				Health 9500
+				Attributes MiniBoss
+				Attributes AlwaysCrit
+				Attributes HoldFireUntilFullReload
+				CharacterAttributes
+				{
+					"move speed bonus" 0.35
+					"airblast vulnerability multiplier" 0.1
+					"override footstep sound set" 7
+					"no self blast dmg" 1
+				}
+				ItemAttributes
+				{
+					ItemName "The Direct Hit"
+					"clip size upgrade atomic" 16
+					"projectile spread angle penalty" 10
+					"damage bonus" 0.75
+					"Reload time decreased" 0.5
+					"fire rate bonus" 0.15
+					"Blast radius increased" 2.0
+					"crits_become_minicrits" 1
+				}
+			}
+		}
+	}
+	
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	 ////////////////// WAVE 004 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	Wave //1400 credits this wave
+	{
+		Checkpoint Yes
+		WaitWhenDone 60
+		Sound "Announcer.IncomingMob"
+		InitWaveOutput
+		{
+			Target tf_mvm_rules
+			Action RunScriptCode
+			Param "EntFire(`bp_s1_enable`,`Trigger`); 
+					EntFire(`bp_s2_enable`,`Trigger`); 
+					EntFire(`bp_s3_enable`,`Trigger`);
+					EntFire(`bp_G1_enable`,`Trigger`);
+					EntFire(`bp_G3_enable`,`Trigger`);
+					EntFire(`bp_t1_enable`,`Trigger`);"
+		}
+		StartWaveOutput
+		{
+			Target wave_start_relay //Target map relay
+			Action Trigger // Trigger it
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action Trigger
+		}
+		  ///////////////////////////////////
+		 ////////SUPPORT BOMB SCOUTS////////
+		///////////////////////////////////
+		WaveSpawn // scouts melee support - MISSION
+		{
+			TotalCurrency 60
+			Where robot_spawn_01
+			TotalCount 25
+			MaxActive 1
+			SpawnCount 1
+			WaitBetweenSpawnsAfterDeath 20
+			WaitBeforeStarting 4
+			Support Limited
+			RandomChoice
+			{	
+				Squad
+				{
+					TFBot
+					{
+						Class Scout
+					}
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////SubWave 0//////////////////
+		///////////////////////////////////
+		WaveSpawn //35000HP tank
+		{			
+			Name "tankw4_2"
+			TotalCount 1
+			WaitBeforeStarting 32								
+			TotalCurrency 150
+			StartWaveOutput
+			{
+				Target train_enable
+				Action Trigger
+			}
+			Tank
+			{
+				Health 35000
+				Speed 60
+				Name "Tank"
+				StartingPathTrackNode "tank_path01"
+				OnBombDroppedOutput                       
+				{
+					Target "tank_drop_relay" 	
+					Action Trigger
+				}
+			}			
+		}
+		WaveSpawn //Demosquito
+		{
+			StartWaveOutput
+			{
+				Target engie_nest_enable
+				Action Trigger // Trigger it
+			}
+			Name "squitow3"
+			Where robot_spawn_03
+			TotalCount 30
+			MaxActive 6
+			SpawnCount 3
+			WaitBeforeStarting 10
+			WaitBetweenSpawns 4
+			TotalCurrency 30
+			Support 1
+			TFBot
+			{
+				Tag "Main"
+				Class Demoman
+				ClassIcon "demosquito"
+				Health 150
+				Scale 0.65
+				Skill Easy
+				Name "Demosquito"
+				Item "The Half-Zatoichi"
+				Item "The Tide Turner"
+				WeaponRestrictions   MeleeOnly
+				BehaviorModifiers Mobber
+				Attributes IgnoreFlag
+				Attributes RemoveOnDeath
+				CharacterAttributes
+				{
+					"move speed bonus"	1.75
+					"voice pitch scale" 1.75
+					"damage bonus" 0.1
+				}
+				ItemAttributes
+				{
+					ItemName "The Tide Turner"
+					"charge recharge rate increased" 10000.0
+					"Attack not cancel charge" 1
+					"charge impact damage increased" 0.1
+					"charge time increased" 25.0
+					"dmg taken from fire reduced" 0.25
+					"dmg bonus vs buildings" 20.0
+				}
+			}
+		}
+		WaveSpawn //Demosquito
+		{
+			Name "squitow3"
+			Where robot_spawn_03
+			TotalCount 30
+			MaxActive 6
+			SpawnCount 3
+			WaitBeforeStarting 15
+			WaitBetweenSpawns 4
+			TotalCurrency 30
+			Support 1
+			TFBot
+			{
+				Tag "Main"
+				Class Demoman
+				ClassIcon "demosquito"
+				Health 150
+				Scale 0.65
+				Skill Easy
+				Name "Demosquito"
+				Item "The Half-Zatoichi"
+				Item "The Tide Turner"
+				WeaponRestrictions   MeleeOnly
+				BehaviorModifiers Mobber
+				Attributes IgnoreFlag
+				Attributes RemoveOnDeath
+				CharacterAttributes
+				{
+					"move speed bonus"	1.75
+					"voice pitch scale" 1.75
+					"damage bonus" 0.1
+				}
+				ItemAttributes
+				{
+					ItemName "The Tide Turner"
+					"charge recharge rate increased" 10000.0
+					"Attack not cancel charge" 1
+					"charge impact damage increased" 0.1
+					"charge time increased" 25.0
+					"dmg taken from fire reduced" 0.25
+					"dmg bonus vs buildings" 20.0
+				}
+			}
+		}
+		WaveSpawn //grid techs with help, kill all to turn off the ravine teleporter
+		{
+			Name "gridtech01"
+			Where robot_spawn_01
+			TotalCount 8
+			MaxActive 4
+			SpawnCount 4
+			WaitBeforeStarting 30
+			WaitBetweenSpawns 4
+			TotalCurrency 40
+			StartWaveOutput
+			{
+				Target ravine_teleport_enable
+				Action Trigger
+			}
+			DoneOutput
+			{
+				Target ravine_teleport_disable
+				Action Trigger
+			}
+			Squad
+			{
+				ShouldPreserveSquad 1
+				TFBot
+				{
+					Class Demoman
+					ClassIcon "demosquito_giant"
+					Health 1250
+					Skill Hard
+					Name "Megasquito"
+					Item "The Half-Zatoichi"
+					Item "The Tide Turner"
+					WeaponRestrictions MeleeOnly
+					BehaviorModifiers Push
+					Attributes MiniBoss
+					Attributes AlwaysCrit
+					CharacterAttributes
+					{
+						"move speed bonus"	1.5
+						"voice pitch scale" 1.25
+						"damage bonus" 0.2
+					}
+					ItemAttributes
+					{
+						ItemName "The Tide Turner"
+						"charge recharge rate increased" 10000.0
+						"Attack not cancel charge" 1
+						"charge impact damage increased" 0.1
+						"charge time increased" 55.0
+						"dmg taken from fire reduced" 0.25
+						"dmg bonus vs buildings" 20
+					}
+				}
+				TFBot
+				{
+					Class Demoman
+					ClassIcon "demosquito_giant"
+					Health 1250
+					Skill Hard
+					Name "Megasquito"
+					Item "The Half-Zatoichi"
+					Item "The Tide Turner"
+					WeaponRestrictions MeleeOnly
+					BehaviorModifiers Push
+					Attributes MiniBoss
+					Attributes AlwaysCrit
+					CharacterAttributes
+					{
+						"move speed bonus"	1.5
+						"voice pitch scale" 1.25
+						"damage bonus" 0.2
+					}
+					ItemAttributes
+					{
+						ItemName "The Tide Turner"
+						"charge recharge rate increased" 10000.0
+						"Attack not cancel charge" 1
+						"charge impact damage increased" 0.1
+						"charge time increased" 55.0
+						"dmg taken from fire reduced" 0.25
+						"dmg bonus vs buildings" 20
+					}
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "grid_technician"
+					Health 4000
+					Scale 1.35
+					Skill Hard
+					Name "Grid Technician"
+					Attributes MiniBoss
+					WeaponRestrictions MeleeOnly
+					BehaviorModifiers Push
+					Attributes AlwaysCrit
+					CharacterAttributes
+					{
+						"move speed bonus" 0.5
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_WRENCH"
+						"damage bonus" 2
+						"melee range multiplier" 1.5
+					}
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "grid_technician"
+					Health 4000
+					Scale 1.35
+					Skill Hard
+					Name "Grid Technician"
+					Attributes MiniBoss
+					WeaponRestrictions MeleeOnly
+					BehaviorModifiers Push
+					Attributes AlwaysCrit
+					CharacterAttributes
+					{
+						"move speed bonus" 0.5
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_WRENCH"
+						"damage bonus" 2
+						"melee range multiplier" 1.5
+					}
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////SubWave 2//////////////////
+		///////////////////////////////////
+		WaveSpawn // Packet losers
+		{
+			Name "bitbyterssw1"
+			TotalCurrency 60
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 6
+			MaxActive 6
+			SpawnCount 3
+			WaitBetweenSpawns 20
+			WaitBeforeStarting 24
+			WaitForAllDead "gridtech01"
+			TFBot
+			{
+				Tag "Main"
+				Name "Packet Loser"
+				Class Demoman
+				ClassIcon "packet_loser"
+				Skill Expert
+				Item "Scotsman's Stove Pipe"
+				Item "The Loch-N-Load"
+				WeaponRestrictions PrimaryOnly
+				Attributes HoldFireUntilFullReload
+				Health 400
+				Attributes AlwaysCrit
+				Scale 0.9
+				Attributes RemoveOnDeath
+				CharacterAttributes
+				{
+					"cancel falling damage" 1
+					"airblast vulnerability multiplier" 0.5
+				}
+				ItemAttributes
+				{
+					ItemName    "The Loch-N-Load"
+					"projectile spread angle penalty" 22
+					"clip size upgrade atomic" 14
+					"fire rate bonus" 0.1
+					"faster reload rate" 0.2
+				}		
+			}
+		}
+		WaveSpawn //35000HP tank
+		{			
+			Name "tankw4_1"
+			TotalCount 1
+			WaitBeforeStarting 52								
+			TotalCurrency 190
+			WaitForAllDead "tankw4_2"
+			Tank
+			{
+				Health 35000
+				Speed 60
+				Name "Tank"
+				StartingPathTrackNode "tank_path_b01"
+				OnBombDroppedOutput                       
+				{
+					Target "tank_drop_relay" 	
+					Action Trigger
+				}
+			}			
+		}
+		WaveSpawn //grid techs with demos, kill all to turn off the ravine teleporter
+		{
+			Name "gridtech01"
+			Where robot_spawn_01
+			TotalCount 16
+			MaxActive 4
+			SpawnCount 4
+			WaitBeforeStarting 30
+			WaitBetweenSpawns 4
+			TotalCurrency 80
+			StartWaveOutput
+			{
+				Target ravine_teleport_enable
+				Action Trigger
+			}
+			DoneOutput
+			{
+				Target ravine_teleport_disable
+				Action Trigger
+			}
+			Squad
+			{
+				ShouldPreserveSquad 1
+				TFBot
+				{
+					Class Demoman
+					ClassIcon "demosquito_giant"
+					Health 1250
+					Skill Hard
+					Name "Megasquito"
+					Item "The Half-Zatoichi"
+					Item "The Tide Turner"
+					WeaponRestrictions MeleeOnly
+					BehaviorModifiers Push
+					Attributes MiniBoss
+					Attributes AlwaysCrit
+					CharacterAttributes
+					{
+						"move speed bonus"	2.0
+						"voice pitch scale" 1.25
+						"damage bonus" 0.2
+					}
+					ItemAttributes
+					{
+						ItemName "The Tide Turner"
+						"charge recharge rate increased" 10000.0
+						"Attack not cancel charge" 1
+						"charge impact damage increased" 0.1
+						"charge time increased" 55.0
+						"dmg taken from fire reduced" 0.25
+						"dmg bonus vs buildings" 20
+					}
+				}
+				TFBot
+				{
+					Class Demoman
+					ClassIcon "demosquito_giant"
+					Health 1250
+					Skill Hard
+					Name "Megasquito"
+					Item "The Half-Zatoichi"
+					Item "The Tide Turner"
+					WeaponRestrictions MeleeOnly
+					BehaviorModifiers Push
+					Attributes MiniBoss
+					Attributes AlwaysCrit
+					CharacterAttributes
+					{
+						"move speed bonus"	2.0
+						"voice pitch scale" 1.25
+						"damage bonus" 0.2
+					}
+					ItemAttributes
+					{
+						ItemName "The Tide Turner"
+						"charge recharge rate increased" 10000.0
+						"Attack not cancel charge" 1
+						"charge impact damage increased" 0.1
+						"charge time increased" 55.0
+						"dmg taken from fire reduced" 0.25
+						"dmg bonus vs buildings" 20
+					}
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "grid_technician"
+					Health 4000
+					Scale 1.35
+					Skill Hard
+					Name "Grid Technician"
+					Attributes MiniBoss
+					WeaponRestrictions MeleeOnly
+					BehaviorModifiers Push
+					Attributes AlwaysCrit
+					CharacterAttributes
+					{
+						"move speed bonus" 0.5
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_WRENCH"
+						"damage bonus" 2
+						"melee range multiplier" 1.25
+					}
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "grid_technician"
+					Health 4000
+					Scale 1.35
+					Skill Hard
+					Name "Grid Technician"
+					Attributes MiniBoss
+					WeaponRestrictions MeleeOnly
+					BehaviorModifiers Push
+					Attributes AlwaysCrit
+					CharacterAttributes
+					{
+						"move speed bonus" 0.5
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_WRENCH"
+						"damage bonus" 2
+						"melee range multiplier" 1.25
+					}
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////SubWave 3//////////////////
+		///////////////////////////////////
+		WaveSpawn
+		{	
+			TotalCount 0
+			SpawnCount 0
+			WaitForAllDead "bitbyterssw1"
+			DoneOutput //disabling train
+			{
+				Target "train_disable"
+				Action Trigger
+			}
+		}
+		WaveSpawn // Packet losers
+		{
+			Name "bitbyterssw2"
+			TotalCurrency 160
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 16
+			MaxActive 4
+			SpawnCount 2
+			WaitBetweenSpawns 20
+			WaitBeforeStarting 24
+			WaitForAllDead "bitbyterssw1"
+			TFBot
+			{
+				Tag "Main"
+				Name "Packet Loser"
+				Class Demoman
+				ClassIcon "packet_loser"
+				Skill Expert
+				Item "Scotsman's Stove Pipe"
+				Item "The Loch-N-Load"
+				WeaponRestrictions PrimaryOnly
+				Attributes HoldFireUntilFullReload
+				Health 400
+				Attributes AlwaysCrit
+				Scale 0.9
+				Attributes RemoveOnDeath
+				CharacterAttributes
+				{
+					"cancel falling damage" 1
+					"airblast vulnerability multiplier" 0.5
+				}
+				ItemAttributes
+				{
+					ItemName    "The Loch-N-Load"
+					"projectile spread angle penalty" 22
+					"clip size upgrade atomic" 14
+					"fire rate bonus" 0.1
+					"faster reload rate" 0.2
+				}		
+			}
+		}
+		WaveSpawn // stack-spiller and some vaccinators
+		{
+			Name "stackspillesw4"
+			TotalCurrency 480
+			Where robot_spawn_02
+			TotalCount 8
+			MaxActive 8
+			SpawnCount 4
+			WaitBetweenSpawns 20
+			WaitBeforeStarting 24
+			WaitForAllDead "bitbyterssw1"
+			StartWaveOutput
+			{
+				Target engie_nest_disable
+				Action Trigger // Trigger it
+			}
+			Squad
+			{
+				TFBot
+				{
+					Name "Stack-Spiller"
+					Class Demoman
+					ClassIcon "packet_loser_giant"
+					Health 25000
+					Skill Expert
+					Scale 1.75
+					WeaponRestrictions "PrimaryOnly"
+					Attributes HoldFireUntilFullReload
+					Attributes MiniBoss
+					Attributes AlwaysCrit
+					Item "The Loch-N-Load"
+					Tag "flank_lower_bridge"
+					ItemAttributes
+					{
+						ItemName "The Loch-N-Load"
+						"projectile spread angle penalty" 22
+						"clip size upgrade atomic" 24
+						"fire rate bonus" 0.1
+						"faster reload rate" 0.1
+					}
+					CharacterAttributes
+					{
+						"move speed bonus"	.35
+						"damage force reduction"	0.1
+						"airblast vulnerability multiplier"	0.1
+						"rage giving scale"	10.0
+						"cancel falling damage" 1 //no fall damage
+						"override footstep sound set" 7
+					}
+				}
+				TFBot
+				{
+					Name "Giant Blast Medic"
+					Class Medic
+					Skill Hard
+					Attributes SpawnWithFullCharge
+					WeaponRestrictions "SecondaryOnly"
+					Health 2000
+					Tag "flank_lower_bridge"
+					Scale 1.25
+					ClassIcon "medic_vac_blast_quank"
+					Attributes MiniBoss
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_MEDIGUN"
+						"lunchbox adds minicrits" 3
+						"medigun blast resist deployed" 4.0
+						"medigun blast resist passive"  1.5
+						"medigun charge is resists" 4
+						"ubercharge rate bonus" 100
+					}
+					CharacterAttributes
+					{
+						"bot medic uber health threshold" 444
+					}
+				}
+				TFBot
+				{
+					Name "Giant Bullet Medic"
+					Class Medic
+					Skill Hard
+					Attributes SpawnWithFullCharge
+					WeaponRestrictions "SecondaryOnly"
+					Health 2000
+					Tag "flank_lower_bridge"
+					Scale 1.25
+					ClassIcon "medic_vac_bullet_quank"
+					Attributes MiniBoss
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_MEDIGUN"
+						"lunchbox adds minicrits" 3
+						"medigun bullet resist deployed" 4.0
+						"medigun bullet resist passive"  1.5
+						"medigun charge is resists" 3
+						"ubercharge rate bonus" 100
+					}
+					CharacterAttributes
+					{
+						"bot medic uber health threshold" 444
+					}
+				}
+				TFBot
+				{
+					Name "Giant Fire Medic"
+					Class Medic
+					Skill Hard
+					Attributes SpawnWithFullCharge
+					WeaponRestrictions "SecondaryOnly"
+					Health 2000
+					Tag "flank_lower_bridge"
+					Scale 1.25
+					ClassIcon "medic_vac_fire_quank"
+					Attributes MiniBoss
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_MEDIGUN"
+						"lunchbox adds minicrits" 3
+						"medigun fire resist deployed" 4.0
+						"medigun fire resist passive"  1.5
+						"medigun charge is resists" 5
+						"ubercharge rate bonus" 100
+					}
+					CharacterAttributes
+					{
+						"bot medic uber health threshold" 444
+					}
+				}
+			}
+		}
+		WaveSpawn // support scouts from down below
+		{
+			TotalCurrency 40
+			Where robot_spawn_01
+			TotalCount 40
+			MaxActive 10
+			SpawnCount 5
+			WaitBetweenSpawns 24
+			WaitBeforeStarting 1
+			Support 1
+			WaitForAllDead "bitbyterssw1"
+			TFBot
+			{
+				Class Scout
+			}
+		}
+		WaveSpawn //Giant bonk scouts from below
+		{
+			Name "bonksw4"
+			Where robot_spawn_02
+			TotalCurrency 80
+			TotalCount 20
+			MaxActive 2
+			SpawnCount 2
+			WaitBetweenSpawns 24
+			WaitBeforeStarting 16
+			Support 1
+			WaitForAllDead "bitbyterssw1"
+			TFBot
+			{
+				Class Scout
+				Skill Hard
+				Name "Giant Bonk! Scout"
+				Item "Bonk! Atomic Punch"
+				Item "Bonk Helm"
+				Item "The Atomizer"
+				WeaponRestrictions MeleeOnly
+				ClassIcon scout_bonk
+				Health 2250
+				Attributes MiniBoss
+				Scale 1.5
+				CharacterAttributes
+				{
+					"damage force reduction" 0.7
+					"airblast vulnerability multiplier" 0.7
+					"override footstep sound set" 5
+					"effect bar recharge rate increased" 0.35
+				}
+			}
+		}
+	}
+	
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	 ////////////////// WAVE 005 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	Wave //1400 credits this wave
+	{
+		Checkpoint Yes
+		WaitWhenDone 60
+		Sound "Announcer.IncomingMob"
+		InitWaveOutput
+		{
+			Target tf_mvm_rules
+			Action RunScriptCode
+			Param "EntFire(`bp_s1_enable`,`Trigger`); 
+					EntFire(`bp_s2_enable`,`Trigger`); 
+					EntFire(`bp_G1_enable`,`Trigger`);
+					EntFire(`bp_G3_enable`,`Trigger`);
+					EntFire(`bp_G4_enable`,`Trigger`);
+					EntFire(`bp_G5_enable`,`Trigger`);
+					EntFire(`bp_G6_enable`,`Trigger`);
+					EntFire(`bp_t1_enable`,`Trigger`);"
+		}
+		StartWaveOutput
+		{
+			Target wave_start_relay //Target map relay
+			Action Trigger // Trigger it
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action Trigger
+		}
+		  ///////////////////////////////////
+		 ////////SUPPORT BOMB SCOUTS////////
+		///////////////////////////////////
+		WaveSpawn // scouts melee support - MISSION
+		{
+			TotalCurrency 50
+			Where robot_spawn_01
+			TotalCount 25
+			MaxActive 1
+			SpawnCount 1
+			WaitBetweenSpawnsAfterDeath 20
+			WaitBeforeStarting 4
+			Support Limited
+			RandomChoice
+			{	
+				Squad
+				{
+					TFBot
+					{
+						Class Scout
+					}
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////DUMMY BOT RAVINE TELE//////
+		///////////////////////////////////
+		WaveSpawn // ravine icon
+		{
+			StartWaveOutput
+			{
+				Target ravine_teleport_enable
+				Action Trigger
+			}
+			TotalCurrency 0
+			Where robot_spawn_dummy
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 1
+			Support 1
+			TFBot
+			{
+				Class Scout
+				ClassIcon "ravine_teleporter"
+				Attributes "MiniBoss"
+				Attributes IgnoreFlag
+				CharacterAttributes
+				{
+					"move speed bonus" 0.0
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////SUPPORT Speed TANKS////////
+		///////////////////////////////////
+		WaveSpawn //Speed Tank on the main tank path
+		{			
+			Name "speed_tank_01"
+			TotalCount 5
+			WaitBeforeStarting 30								
+			TotalCurrency 125
+			WaitBetweenSpawns 150
+			Support 1
+			Tank
+			{
+				Health 6500
+				Speed 80
+				Name "Speed Tank"
+				StartingPathTrackNode "tank_path01"
+				Skin 1
+				OnBombDroppedOutput                       
+				{
+					Target "tank_drop_relay" 	
+					Action Trigger
+				}
+			}			
+		}
+		WaveSpawn //Speed Tank on the B tank path
+		{			
+			Name "speed_tank_02"
+			TotalCount 5
+			WaitBeforeStarting 90								
+			TotalCurrency 125
+			WaitBetweenSpawns 150
+			Support 1
+			Tank
+			{
+				Health 6500
+				Speed 80
+				Name "Speed Tank"
+				StartingPathTrackNode "tank_pathb01"
+				Skin 1
+				OnBombDroppedOutput                       
+				{
+					Target "tank_drop_relay" 	
+					Action Trigger
+				}
+			}			
+		}
+		WaveSpawn
+		{
+			TotalCount 0
+			SpawnCount 0
+			DoneOutput //disabling train
+			{
+				Target "train_disable"
+				Action Trigger
+			}
+		}
+		WaveSpawn //quick small scouts up top Lower bridge path
+		{
+			TotalCurrency 54
+			Where robot_spawn_02
+			TotalCount 18
+			MaxActive 6
+			SpawnCount 2
+			WaitBetweenSpawns 16
+			WaitBeforeStarting 8
+			StartWaveOutput
+			{
+				Target engie_nest_enable
+				Action Trigger
+			}
+			TFBot
+			{
+				Class Scout
+				Skill Hard
+				Health 175
+				Item "The Force-A-Nature"
+				ClassIcon "scout_fan"
+				CharacterAttributes
+				{
+				
+					"move speed bonus" 1.25
+				}
+				ItemAttributes
+				{
+					ItemName "The Force-A-Nature"
+					"fire rate bonus" 0.25 //75% faster firing
+					"clip size upgrade atomic" 4
+				}
+			}
+		}
+		WaveSpawn //quick small scouts below, main path
+		{
+			TotalCurrency 54
+			Where robot_spawn_01
+			TotalCount 18
+			MaxActive 6
+			SpawnCount 2
+			WaitBetweenSpawns 16
+			WaitBeforeStarting 16
+			TFBot
+			{
+				Name "Gold Tosser"
+				Class Sniper
+				Skill Hard
+				Tag "flank_sewer_spiral_intel_left"
+				BehaviorModifiers "Mobber"
+				Health 200
+				WeaponRestrictions SecondaryOnly
+				Item "Jarate"
+				Scale 1.20
+				Item "The Doublecross-Comm"
+				ClassIcon "sniper_jarate"
+				CharacterAttributes
+				{
+					"rage giving scale" 2.0
+					"move speed bonus" 0.75
+				}
+				ItemAttributes
+				{
+					ItemName "TF_WEAPON_SNIPERRIFLE"
+					"override projectile type" 7
+					"fire rate penalty" 2000
+				}
+				ItemAttributes
+				{
+					ItemName "Jarate"
+					"effect bar recharge rate increased" 0.1
+				}
+			}
+		}
+		WaveSpawn //Big Fat scouts
+		{
+			Name "fatscouts_1"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 24
+			MaxActive 6
+			SpawnCount 6
+			WaitBeforeStarting 30
+			WaitBetweenSpawns 12
+			TotalCurrency 48
+			TFBot
+			{
+				Tag "Main"
+				Name "Chonk Trooper"
+				Class Heavy
+				Skill Hard
+				WeaponRestrictions "SecondaryOnly"
+				Health 400
+				Scale 1.15
+				ClassIcon "heavy_shotgun_fast"
+				CharacterAttributes
+				{
+					"move speed bonus" 1.2
+				}
+			}
+		}
+		//Calcium Commander
+		WaveSpawn
+		{
+			Name "calcccc"
+			Where robot_spawn_02
+			TotalCount 6
+			MaxActive 2
+			SpawnCount 2
+			WaitBeforeStarting 64
+			WaitBetweenSpawns 12
+			TotalCurrency 72
+			TFBot
+			{
+				Tag "flank_lower_bridge"
+				Name "Calcium Commander"
+				Class Soldier
+				ClassIcon "calcium_soldier_giant"
+				Skill Hard
+				Item "The Black Box"
+				Item "The Concheror"
+				WeaponRestrictions PrimaryOnly
+				Health 12000
+				Attributes MiniBoss
+				Attributes AlwaysCrit
+				CharacterAttributes
+				{
+					"move speed bonus" 0.4
+				}
+				ItemAttributes
+				{
+					ItemName "The Black Box"
+					"crits_become_minicrits" 1
+					"heal on kill" 7500
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////SubWave 2//////////////////
+		///////////////////////////////////
+		WaveSpawn
+		{
+			Name "luna_ticks01"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 16
+			MaxActive 16
+			SpawnCount 4
+			WaitBeforeStarting 120
+			WaitBetweenSpawns 16
+			TotalCurrency 112
+			WaitForAllDead "calcccc"
+			TFBot //Small Luna Ticks
+			{
+				Name "Mini-Tick"
+				Class Scout
+				Skill Expert
+				Health 7500
+				Scale 1.5
+				WeaponRestrictions "PrimaryOnly"
+				Attributes MiniBoss
+				Item "The Back Scatter"
+				ClassIcon "scout_fan"
+				CharacterAttributes
+				{
+					"move speed bonus" 0.5
+					"airblast vulnerability multiplier" 0.5
+					"damage force reduction" 0.1
+					"dmg taken from bullets reduced" 1.25
+					"dmg taken from blast reduced" 0.75
+					"dmg taken from crit reduced" 1.35
+				}
+				ItemAttributes
+				{
+					ItemName "The Back Scatter"
+					"scattergun has knockback" 1
+					"scattergun knockback mult" 2.5
+					"minicrits become crits" 1
+				}
+			}
+		}
+		WaveSpawn //Big Fat scouts again
+		{
+			Name "fatscouts_2"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 24
+			MaxActive 6
+			SpawnCount 6
+			WaitBeforeStarting 30
+			WaitBetweenSpawns 12
+			TotalCurrency 72
+			WaitForAllDead "fatscouts_1"
+			TFBot
+			{
+				Class Spy
+				Health 175
+				Scale 0.65
+				Skill Easy
+				Name "Sneakroach"
+				WeaponRestrictions   PrimaryOnly
+				Attributes IgnoreFlag
+				Item "The Enforcer"
+				Item "The Belgian Detective"
+				Attributes RemoveOnDeath
+				CharacterAttributes
+				{
+					"move speed bonus"	2.5
+					"voice pitch scale" 1.75
+				}
+				ItemAttributes
+				{
+					ItemName "The Enforcer"
+					"damage bonus" 0.1
+					"fire rate bonus" 0.1
+					"mark for death" 1
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////SubWave 3//////////////////
+		///////////////////////////////////
+		WaveSpawn
+		{
+			Name "Junior_01_plus_medics"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 18
+			MaxActive 12
+			SpawnCount 6
+			WaitBeforeStarting 30
+			WaitBetweenSpawns 36
+			WaitForAllDead "fatscouts_2"
+			TotalCurrency 360
+			Squad
+			{
+				TFBot
+				{
+					Name "Junior Beans"
+					Class Demoman
+					ClassIcon "junior_beans"
+					Health 25000
+					Skill Expert
+					Scale 1.75
+					WeaponRestrictions "PrimaryOnly"
+					Attributes HoldFireUntilFullReload
+					Attributes UseBossHealthBar
+					Attributes AlwaysCrit
+					Attributes MiniBoss
+					Item "The Chargin' Targe"
+					Item "The Frag Proof Fragger"
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_GRENADELAUNCHER"
+						"clip size upgrade atomic" 16.0
+						"damage bonus" 1.5
+						"faster reload rate" 0.2 //80% faster reload
+						"fire rate bonus" 0.2 //80% faster fire rate
+						"Projectile speed increased"  0.40 //60% slower projectile speed
+						"apply z velocity on damage" 300
+					}
+					CharacterAttributes
+					{
+						"move speed bonus"	.35
+						"damage force reduction"	0.1
+						"airblast vulnerability multiplier"	0.1
+						"rage giving scale"	10.0
+						"no self blast dmg" 1 //no damage taken from self pills
+						"cancel falling damage" 1 //no fall damage
+						"override footstep sound set" 7
+					}
+				}
+				TFBot
+				{
+					Name "Bullet Medic"
+					Class Medic
+					Skill Hard
+					Attributes SpawnWithFullCharge
+					Health 4000
+					WeaponRestrictions SecondaryOnly
+					Attributes MiniBoss
+					ClassIcon "medic_vac_bullet_quank"
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_MEDIGUN"
+						"lunchbox adds minicrits" 3
+						"medigun bullet resist deployed" 5.0
+						"medigun bullet resist passive"  1.5
+						"medigun charge is resists" 3
+						"ubercharge rate bonus" 150
+					}
+					CharacterAttributes
+					{
+						"bot medic uber health threshold" 444
+					}
+				}
+				TFBot
+				{
+					Name "Bullet Medic"
+					Class Medic
+					Skill Hard
+					Attributes SpawnWithFullCharge
+					Health 4000
+					WeaponRestrictions SecondaryOnly
+					Attributes MiniBoss
+					ClassIcon "medic_vac_bullet_quank"
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_MEDIGUN"
+						"lunchbox adds minicrits" 3
+						"medigun bullet resist deployed" 5.0
+						"medigun bullet resist passive"  1.5
+						"medigun charge is resists" 3
+						"ubercharge rate bonus" 150
+					}
+					CharacterAttributes
+					{
+						"bot medic uber health threshold" 444
+					}
+				}
+				TFBot
+				{
+					Name "Blast Medic"
+					Class Medic
+					Skill Hard
+					Attributes SpawnWithFullCharge
+					Health 4000
+					WeaponRestrictions SecondaryOnly
+					Attributes MiniBoss
+					ClassIcon "medic_vac_blast_quank"
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_MEDIGUN"
+						"lunchbox adds minicrits" 3
+						"medigun blast resist deployed" 5.0
+						"medigun blast resist passive"  1.5
+						"medigun charge is resists" 4
+						"ubercharge rate bonus" 150
+					}
+				}
+				TFBot
+				{
+					Name "Blast Medic"
+					Class Medic
+					Skill Hard
+					Attributes SpawnWithFullCharge
+					Health 4000
+					WeaponRestrictions SecondaryOnly
+					Attributes MiniBoss
+					ClassIcon "medic_vac_blast_quank"
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_MEDIGUN"
+						"lunchbox adds minicrits" 3
+						"medigun blast resist deployed" 5.0
+						"medigun blast resist passive"  1.5
+						"medigun charge is resists" 4
+						"ubercharge rate bonus" 150
+					}
+				}
+				TFBot
+				{
+					Name "Blast Medic"
+					Class Medic
+					Skill Hard
+					Attributes SpawnWithFullCharge
+					Health 4000
+					WeaponRestrictions SecondaryOnly
+					Attributes MiniBoss
+					ClassIcon "medic_vac_blast_quank"
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_MEDIGUN"
+						"lunchbox adds minicrits" 3
+						"medigun blast resist deployed" 5.0
+						"medigun blast resist passive"  1.5
+						"medigun charge is resists" 4
+						"ubercharge rate bonus" 150
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name "giant_scout_runners_1"
+			Where robot_spawn_01
+			TotalCount 16
+			MaxActive 8
+			SpawnCount 4
+			WaitBeforeStarting 48
+			WaitBetweenSpawns 18
+			WaitForAllDead "fatscouts_2"
+			TFBot
+			{
+				Name "Giant Scout"
+				Class Scout
+				Health 4500
+				Skill Hard
+				WeaponRestrictions PrimaryOnly
+				ClassIcon "scout_giant_fast"
+				Attributes MiniBoss
+				Item "Fuel Injector"
+				CharacterAttributes
+				{
+					"move speed bonus" 1.25
+					"override footstep sound set" 5
+					"airblast vulnerability multiplier" 0.7
+				}
+			}
+		}
+		WaveSpawn //Big Fat scouts again
+		{
+			Name "fatscouts_3"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 12
+			MaxActive 2
+			SpawnCount 2
+			WaitBeforeStarting 30
+			WaitBetweenSpawns 12
+			TotalCurrency 36
+			WaitForAllDead "fatscouts_2"
+			TFBot
+			{
+				Class Spy
+				Health 175
+				Scale 0.65
+				Skill Easy
+				Name "Sneakroach"
+				WeaponRestrictions   PrimaryOnly
+				Attributes IgnoreFlag
+				Item "The Enforcer"
+				Item "The Belgian Detective"
+				Attributes RemoveOnDeath
+				CharacterAttributes
+				{
+					"move speed bonus"	2.5
+					"voice pitch scale" 1.75
+				}
+				ItemAttributes
+				{
+					ItemName "The Enforcer"
+					"damage bonus" 0.1
+					"fire rate bonus" 0.1
+					"mark for death" 1
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////SubWave 4//////////////////
+		///////////////////////////////////
+		//This subwave is a meant to be easy!
+		WaveSpawn
+		{
+			Name "luna_ticks02"
+			Where robot_spawn_01
+			TotalCount 24
+			MaxActive 8
+			SpawnCount 4
+			WaitBeforeStarting 18
+			WaitForAllDead "Junior_01_plus_medics"
+			WaitBetweenSpawns 16
+			TotalCurrency 24
+			TFBot //Small Luna Ticks
+			{
+				Name "Mini-Tick"
+				Class Scout
+				Skill Expert
+				Health 10000
+				Scale 1.1
+				WeaponRestrictions "PrimaryOnly"
+				Item "The Back Scatter"
+				ClassIcon "scout_fan"
+				CharacterAttributes
+				{
+					"move speed bonus" 0.5
+					"airblast vulnerability multiplier" 0.1
+					"damage force reduction" 0.1
+					"dmg taken from bullets reduced" 1.25
+					"dmg taken from blast reduced" 0.75
+					"dmg taken from crit reduced" 2.0
+				}
+				ItemAttributes
+				{
+					ItemName "The Back Scatter"
+					"scattergun has knockback" 1
+					"scattergun knockback mult" 4
+					"minicrits become crits" 1
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name "Packet_Losers_1"
+			Where robot_spawn_02
+			TotalCount 24
+			MaxActive 12
+			SpawnCount 2
+			WaitBeforeStarting 34
+			WaitBetweenSpawns 8
+			TotalCurrency 192
+			WaitForAllDead "Junior_01_plus_medics"
+			Squad
+			{
+				TFBot
+				{
+					Tag "flank_lower_bridge_intel_left"
+					Name "Packet Loser"
+					Class Demoman
+					ClassIcon "packet_loser_giant"
+					Skill Expert
+					Item "Scotsman's Stove Pipe"
+					Item "The Loch-N-Load"
+					WeaponRestrictions PrimaryOnly
+					Attributes HoldFireUntilFullReload
+					Health 650
+					Attributes AlwaysCrit
+					CharacterAttributes
+					{
+						"cancel falling damage" 1
+						"airblast vulnerability multiplier" 0.5
+					}
+					ItemAttributes
+					{
+						ItemName    "The Loch-N-Load"
+						"projectile spread angle penalty" 22
+						"clip size upgrade atomic" 14
+						"fire rate bonus" 0.1
+						"faster reload rate" 0.2
+					}		
+				}
+				TFBot
+				{
+					Tag "flank_lower_bridge_intel_left"
+					Class Medic
+					Skill Hard
+					Attributes SpawnWithFullCharge
+					Health 450
+					Name "Uber Medic"
+					WeaponRestrictions SecondaryOnly
+				}
+			}
+		}
+		WaveSpawn //Major League Milkers
+		{
+			Name "sub3a"
+			WaitForAllDead "Junior_01_plus_medics"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 16
+			MaxActive 4
+			SpawnCount 2
+			WaitBeforeStarting 18
+			WaitBetweenSpawns 10
+			TotalCurrency 80
+			DoneOutput
+			{
+				Target engie_nest_disable
+				Action Trigger
+			}
+			TFBot
+			{
+				Tag "flank_lower_bridge"
+				Name "Major League Milker"
+				Class Scout
+				ClassIcon "calcium_scout"
+				Skill Hard
+				WeaponRestrictions "SecondaryOnly"
+				BehaviorModifiers "Mobber"
+				Health 2200
+				Item "The Milkman"
+				Item "Mad Milk"
+				Attributes MiniBoss
+				CharacterAttributes
+				{
+					"move speed bonus" 1.25
+					"rage giving scale" 2.0
+				}
+				ItemAttributes
+				{
+					ItemName "TF_WEAPON_SCATTERGUN"
+					"override projectile type" 7
+					"fire rate penalty" 2000
+				}
+				ItemAttributes
+				{
+					ItemName "Mad Milk"
+					"effect bar recharge rate increased" 0.1
+				}
+			}
+		}
+	}
+		
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	 ////////////////// WAVE 006 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	Wave //1500 credits this wave, should be about as difficult or even easier than last wave
+	{
+		Checkpoint Yes
+		WaitWhenDone 60
+		Sound "Announcer.IncomingMob"
+		InitWaveOutput
+		{
+			Target tf_mvm_rules
+			Action RunScriptCode
+			Param "EntFire(`bp_s1_enable`,`Trigger`); 
+					EntFire(`bp_s2_enable`,`Trigger`); 
+					EntFire(`bp_s3_enable`,`Trigger`);
+					EntFire(`bp_G1_enable`,`Trigger`);
+					EntFire(`bp_G2_enable`,`Trigger`);
+					EntFire(`bp_G5_enable`,`Trigger`);
+					EntFire(`bp_G7_enable`,`Trigger`);
+					EntFire(`bp_t1_enable`,`Trigger`);"
+		}
+		StartWaveOutput
+		{
+			Target wave_start_relay //Target map relay
+			Action Trigger // Trigger it
+		}
+		DoneOutput
+		{
+			Target wave_finished_relay
+			Action Trigger
+		}
+		  ///////////////////////////////////
+		 ////////SUPPORT BOMB SCOUTS////////
+		///////////////////////////////////
+		WaveSpawn // scouts melee support - MISSION
+		{
+			TotalCurrency 50
+			Where robot_spawn_01
+			TotalCount 25
+			MaxActive 1
+			SpawnCount 1
+			WaitBetweenSpawnsAfterDeath 20
+			WaitBeforeStarting 4
+			Support Limited
+			RandomChoice
+			{	
+				Squad
+				{
+					TFBot
+					{
+						Class Scout
+					}
+				}
+			}
+		}
+		  ///////////////////////////////////
+		 ////////DUMMY BOT RAVINE TELE//////
+		///////////////////////////////////
+		WaveSpawn // ravine icon
+		{
+			StartWaveOutput
+			{
+				Target ravine_teleport_enable
+				Action Trigger
+			}
+			TotalCurrency 0
+			Where robot_spawn_dummy
+			TotalCount 1
+			MaxActive 1
+			SpawnCount 1
+			WaitBeforeStarting 1
+			Support 1
+			TFBot
+			{
+				Class Scout
+				ClassIcon "ravine_teleporter"
+				Attributes "MiniBoss"
+				Attributes IgnoreFlag
+				CharacterAttributes
+				{
+					"move speed bonus" 0.0
+				}
+			}
+		}
+		  /////////////////////////
+		 ////////SUBWAVE 0////////
+		////////////////////////
+		WaveSpawn //Beefy Tank, slow, takes main path
+		{			
+			Name "sub0at"
+			TotalCount 1
+			WaitBeforeStarting 19								
+			TotalCurrency 256
+			StartWaveOutput
+			{
+				Target train_enable
+				Action Trigger
+			}
+			Tank
+			{
+				Health 60000
+				Speed 45
+				Name "Tank"
+				StartingPathTrackNode "tank_path01"
+				OnBombDroppedOutput                       
+				{
+					Target "tank_drop_relay" 	
+					Action Trigger
+				}
+			}			
+		}
+		  /////////////////////////
+		 ////////SUBWAVE 1////////
+		////////////////////////
+		WaveSpawn //BridgeBurners
+		{
+			Name "sub0a"
+			Where robot_spawn_01
+			TotalCount 6
+			MaxActive 2
+			SpawnCount 2
+			WaitBeforeStarting 16
+			WaitBetweenSpawns 14
+			TotalCurrency 60
+			Squad
+			{
+				TFBot
+				{
+					Item "The Huo Long Heatmaker"
+					Item "The Dragonborn Helmet"
+					Class Heavy
+					ClassIcon "heavy_heater"
+					Tag "Main"
+					Skill Expert
+					Health 19500
+					WeaponRestrictions PrimaryOnly
+					Name "Bridge Burner"
+					Scale 1.75
+					Attributes AlwaysCrit
+					Attributes MiniBoss
+					CharacterAttributes
+					{
+						"move speed bonus" 0.25
+						"airblast vulnerability multiplier" 0.1
+						"damage force reduction" 0.1
+						"override footstep sound set" 7
+					}
+					ItemAttributes
+					{
+						ItemName "The Huo Long Heatmaker"
+						"fire rate bonus with reduced health" 2.0
+					}
+				}
+				TFBot
+				{
+					Item "Medic Mask"
+					Class Medic
+					Tag "Main"
+					Skill Expert
+					Health 6500
+					Name "Giant Uber-Medic"
+					Scale 1.5
+					Attributes SpawnWithFullCharge
+					WeaponRestrictions SecondaryOnly
+					Attributes MiniBoss
+					CharacterAttributes
+					{
+						"move speed bonus"	0.35
+						"damage force reduction" 0.1
+						"airblast vulnerability multiplier" 0.1
+					}
+				}
+			}
+		}
+		WaveSpawn //BridgeBurners
+		{
+			Name "sub0aa"
+			Where robot_spawn_03
+			TotalCount 6
+			MaxActive 2
+			SpawnCount 2
+			WaitBeforeStarting 16
+			WaitBetweenSpawns 14
+			TotalCurrency 60
+			Squad
+			{
+				TFBot
+				{
+					Item "The Huo Long Heatmaker"
+					Item "The Dragonborn Helmet"
+					Class Heavy
+					ClassIcon "heavy_heater"
+					Tag "Main"
+					Skill Expert
+					Health 19500
+					WeaponRestrictions PrimaryOnly
+					Name "Bridge Burner"
+					Scale 1.75
+					Attributes AlwaysCrit
+					Attributes MiniBoss
+					CharacterAttributes
+					{
+						"move speed bonus" 0.25
+						"airblast vulnerability multiplier" 0.1
+						"damage force reduction" 0.1
+						"override footstep sound set" 7
+					}
+					ItemAttributes
+					{
+						ItemName "The Huo Long Heatmaker"
+						"fire rate bonus with reduced health" 2.0
+					}
+				}
+				TFBot
+				{
+					Item "Medic Mask"
+					Class Medic
+					Tag "Main"
+					Skill Expert
+					Health 6500
+					Name "Giant Uber-Medic"
+					Scale 1.5
+					Attributes SpawnWithFullCharge
+					WeaponRestrictions SecondaryOnly
+					Attributes MiniBoss
+					CharacterAttributes
+					{
+						"move speed bonus"	0.35
+						"damage force reduction" 0.1
+						"airblast vulnerability multiplier" 0.1
+					}
+				}
+			}
+		}
+		//HOPPERBOTTERS
+		WaveSpawn
+		{
+			Name "sub1a"
+			Where robot_spawn_01
+			TotalCount 16
+			MaxActive 8
+			SpawnCount 4
+			WaitBeforeStarting 54
+			WaitBetweenSpawns 12
+			TotalCurrency 128
+			TFBot
+			{
+				Item "The Bubble Pipe"
+				Item "The Moonman Backpack"
+				Item "The Phlogistinator"
+				Attributes AutoJump
+				AutoJumpMin 3.0
+				AutoJumpMax 4.0
+				Tag "flank_intel_left"
+				Class Pyro
+				ClassIcon "hopper_botter"
+				Skill Hard
+				Health 450
+				WeaponRestrictions    PrimaryOnly
+				Attributes  SpawnWithFullCharge
+				Attributes AlwaysFireWeapon
+				Name "Hopper Botter"
+				Scale 1.25
+				CharacterAttributes
+				{
+					"increased jump height" 5.0
+					"cancel falling damage" 1
+					"move speed bonus" 0.75
+					"damage force increase" 10.0
+				}
+				ItemAttributes
+				{
+					ItemName    "The Phlogistinator"
+					"airblast disabled"    0
+					"flame_speed" 1200
+					"flame_spread_degree" 1
+					"damage bonus" 5.0
+				}					
+			}
+		}
+		  /////////////////////////
+		 ////////SUBWAVE 2////////
+		////////////////////////
+		//BigGineer and scouts
+		WaveSpawn
+		{
+			TotalCount 0
+			SpawnCount 0
+			WaitForAllDead "sub1a"
+			DoneOutput //disabling train
+			{
+				Target "train_disable"
+				Action Trigger
+			}
+		}
+		WaveSpawn
+		{
+			Name "sub2b"
+			WaitForAllDead "sub1a"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 24
+			MaxActive 8
+			SpawnCount 4
+			WaitBeforeStarting 14
+			WaitBetweenSpawns 16
+			TotalCurrency 120
+			Squad
+			{
+				TFBot
+				{
+					Class Scout
+				}
+				TFBot
+				{
+					Class Scout
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "mingineer_giant"
+					Health 6500
+					Scale 1.25
+					Skill Expert
+					Name "BigGineer"
+					WeaponRestrictions PrimaryOnly
+					BehaviorModifiers Push
+					Attributes AlwaysCrit
+					Attributes MiniBoss
+					CharacterAttributes
+					{
+						"move speed bonus" 0.8
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_SHOTGUN_PRIMARY"
+						"bullets per shot bonus" 1.5
+						"dmg falloff increased" 0.5
+					}
+				}
+				TFBot
+				{
+					Class Engineer
+					ClassIcon "mingineer_giant"
+					Health 6500
+					Scale 1.25
+					Skill Expert
+					Name "BigGineer"
+					WeaponRestrictions PrimaryOnly
+					BehaviorModifiers Push
+					Attributes AlwaysCrit
+					Attributes MiniBoss
+					CharacterAttributes
+					{
+						"move speed bonus" 0.8
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_SHOTGUN_PRIMARY"
+						"bullets per shot bonus" 1.5
+						"dmg falloff increased" 0.5
+					}
+				}
+			}
+		}
+		WaveSpawn
+		{
+			Name "sub2bb"
+			WaitForAllDead "sub1a"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 24
+			MaxActive 8
+			SpawnCount 4
+			WaitBeforeStarting 18
+			WaitBetweenSpawns 16
+			TotalCurrency 144
+			Squad
+			{
+				TFBot
+				{
+					Tag "flank_sewer_spiral"
+					Name "Bit Byter"
+					Class Demoman
+					ClassIcon "packet_loser"
+					Skill Expert
+					Item "The Glasgow Great Helm"
+					Item "The Chargin' Targe"
+					WeaponRestrictions PrimaryOnly
+					Attributes HoldFireUntilFullReload
+					Health 450
+					Attributes AlwaysCrit
+					Scale 1.1
+					CharacterAttributes
+					{
+						"cancel falling damage" 1
+						"airblast vulnerability multiplier" 0.5
+					}
+					ItemAttributes
+					{
+						ItemName    "TF_WEAPON_GRENADELAUNCHER"
+						"clip size upgrade atomic" 8.0
+						"fire rate bonus" 0.1
+						"faster reload rate" 0.1
+						"Projectile speed increased"  .35
+						"apply z velocity on damage" 350
+					}		
+				}
+				TFBot
+				{
+					Tag "flank_sewer_spiral"
+					Name "Bit Byter"
+					Class Demoman
+					ClassIcon "packet_loser"
+					Skill Expert
+					Item "The Glasgow Great Helm"
+					Item "The Chargin' Targe"
+					WeaponRestrictions PrimaryOnly
+					Attributes HoldFireUntilFullReload
+					Health 450
+					Attributes AlwaysCrit
+					Scale 1.1
+					CharacterAttributes
+					{
+						"cancel falling damage" 1
+						"airblast vulnerability multiplier" 0.5
+					}
+					ItemAttributes
+					{
+						ItemName    "TF_WEAPON_GRENADELAUNCHER"
+						"clip size upgrade atomic" 8.0
+						"fire rate bonus" 0.1
+						"faster reload rate" 0.1
+						"Projectile speed increased"  .35
+						"apply z velocity on damage" 350
+					}		
+				}
+				TFBot
+				{
+					Tag "flank_sewer_spiral"
+					Class Medic
+					Skill Hard
+					Attributes SpawnWithFullCharge
+					Item "The Quick-Fix"
+					Health 450
+					Name "Quick-Fix Medic"
+					WeaponRestrictions SecondaryOnly
+					ItemAttributes
+					{
+						ItemName "The Quick-Fix"
+						"ubercharge rate bonus" 0.1
+					}
+				}
+				TFBot
+				{
+					Tag "flank_sewer_spiral"
+					Class Medic
+					Skill Hard
+					Attributes SpawnWithFullCharge
+					Item "The Quick-Fix"
+					Health 450
+					Name "Quick-Fix Medic"
+					WeaponRestrictions SecondaryOnly
+					ItemAttributes
+					{
+						ItemName "The Quick-Fix"
+						"ubercharge rate bonus" 0.1
+					}
+				}
+			}
+		}
+		WaveSpawn //Fat scouts from up top
+		{
+			Name "sub2c"
+			WaitForAllDead "sub1a"
+			Where robot_spawn_02
+			TotalCount 24
+			MaxActive 8
+			SpawnCount 4
+			WaitBeforeStarting 24
+			WaitBetweenSpawns 16
+			TotalCurrency 96
+			TFBot
+			{
+				Tag "flank_sewer_stairs"
+				Name "Chonk Trooper"
+				Class Heavy
+				Skill Hard
+				WeaponRestrictions "SecondaryOnly"
+				Health 400
+				ClassIcon "heavy_shotgun_fast"
+				CharacterAttributes
+				{
+					"move speed bonus" 1.2
+				}
+			}
+		}
+		  /////////////////////////
+		 ////////SUBWAVE 3////////
+		////////////////////////
+		WaveSpawn //BigiGunners
+		{
+			Name "sub3b"
+			WaitForAllDead "sub2c"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 18
+			MaxActive 6
+			SpawnCount 3
+			WaitBeforeStarting 22
+			WaitBetweenSpawns 12
+			TotalCurrency 90
+			TFBot
+			{
+				Tag "flank_sewer_spiral"
+				Name "Mini-Gunner"
+				Class Heavy
+				ClassIcon "minigunner_giant"
+				Skill Hard
+				WeaponRestrictions "PrimaryOnly"
+				BehaviorModifiers "Mobber"
+				Health 2500
+				Scale 1.25
+				Attributes MiniBoss
+				CharacterAttributes
+				{
+					"move speed bonus" 0.8
+					"airblast vulnerability multiplier" 0.25
+				}
+			}
+		}
+		WaveSpawn //MORE BigiGunners!
+		{
+			Name "sub3d"
+			WaitForAllDead "sub2b"
+			Where robot_spawn_01
+			Where robot_spawn_02
+			TotalCount 24
+			MaxActive 4
+			SpawnCount 4
+			WaitBeforeStarting 46
+			WaitBetweenSpawns 6
+			TotalCurrency 96
+			TFBot
+			{
+				Tag "flank_sewer_stairs"
+				Name "Mini-Gunner"
+				Class Heavy
+				ClassIcon "minigunner_giant"
+				Skill Hard
+				WeaponRestrictions "PrimaryOnly"
+				BehaviorModifiers "Mobber"
+				Health 2500
+				Scale 1.25
+				Attributes MiniBoss
+				CharacterAttributes
+				{
+					"move speed bonus" 0.8
+					"airblast vulnerability multiplier" 0.25
+				}
+			}
+		}
+		  /////////////////////////////
+		 ////////FINAL SUBWAVE////////
+		/////////////////////////////
+		WaveSpawn //soldier supports
+		{
+			Name "Support soldiers"
+			WaitForAllDead "sub3d"
+			TotalCurrency 40
+			Where robot_spawn_02
+			TotalCount 40
+			MaxActive 5
+			SpawnCount 2
+			WaitBeforeStarting 12
+			WaitBetweenSpawns 24
+			Support 1
+			TFBot
+			{
+				Health 350
+				Class Soldier
+				WeaponRestrictions "PrimaryOnly"
+				Item "The Cow Mangler 5000"
+				ClassIcon "mangler"
+			}
+		}
+		WaveSpawn //heavy supports
+		{
+			Name "Support heavy"
+			WaitForAllDead "sub3d"
+			TotalCurrency 60
+			Where robot_spawn_03
+			TotalCount 30
+			MaxActive 8
+			SpawnCount 2
+			WaitBeforeStarting 40
+			WaitBetweenSpawns 24
+			Support 1
+			TFBot
+			{
+				Health 400
+				Class Heavy
+				WeaponRestrictions "PrimaryOnly"
+				Item "Tomislav"
+				ClassIcon "heavy_tomislav"
+			}
+		}
+		WaveSpawn
+		{
+			Name "BEANS"
+			WaitForAllDead "sub3d"
+			Where robot_spawn_01
+			TotalCount 5
+			MaxActive 5
+			SpawnCount 5
+			WaitBeforeStarting 18
+			TotalCurrency 400
+			Squad
+			{
+				ShouldPreserveSquad 1
+				TFBot
+				{
+					Name "Master Beans"
+					Class Demoman
+					ClassIcon "master_beans"
+					Health 55000
+					Skill Expert
+					Scale 2.0
+					WeaponRestrictions "PrimaryOnly"
+					Attributes HoldFireUntilFullReload
+					Attributes MiniBoss
+					Attributes UseBossHealthBar
+					Attributes AlwaysCrit
+					Item "The Chargin' Targe"
+					Item "The Frag Proof Fragger"
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_GRENADELAUNCHER"
+						"clip size upgrade atomic" 46.0
+						"damage bonus" 2
+						"faster reload rate" .1 //90% faster reload
+						"fire rate bonus" .1 //90% faster fire rate
+						"Projectile speed increased"  .40 //65% slower projectile speed
+						"apply z velocity on damage" 1000
+						"dmg taken from crit increased" 2.0
+						"ragdolls become ash" 1
+					}
+					ItemAttributes
+					{
+						ItemName "The Frag Proof Fragger"
+						"set item tint rgb" 12377523
+					}
+					CharacterAttributes
+					{
+						"move speed bonus"	.25
+						"damage force reduction"	0.1
+						"airblast vulnerability multiplier"	0.05
+						"rage giving scale"	10.0
+						"no self blast dmg" 1 //no damage taken from self beans
+						"cancel falling damage" 1 //no fall damage
+						"override footstep sound set" 7
+					}
+				}
+				TFBot
+				{
+					Name "Mega Bullet Medic"
+					Class Medic
+					Health 30000
+					Skill Expert
+					Scale 1.8
+					WeaponRestrictions "SecondaryOnly"
+					Attributes MiniBoss
+					Attributes  SpawnWithFullCharge
+					ClassIcon "medic_vac_bullet_quank"
+					CharacterAttributes
+					{
+						"move speed bonus" 0.35
+						"airblast vulnerability multiplier" 0.05
+						"damage force reduction" 0.1
+						"bot medic uber health threshold" 444
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_MEDIGUN"
+						"lunchbox adds minicrits" 3
+						"medigun bullet resist deployed" 10.0
+						"medigun bullet resist passive"  4.0
+						"medigun charge is resists" 3
+						"ubercharge rate bonus" 225
+					}
+				}
+				TFBot
+				{
+					Name "Mega Blast Medic"
+					Class Medic
+					Health 30000
+					Skill Expert
+					Scale 1.8
+					WeaponRestrictions "SecondaryOnly"
+					Attributes MiniBoss
+					Attributes  SpawnWithFullCharge
+					ClassIcon "medic_vac_blast_quank"
+					CharacterAttributes
+					{
+						"move speed bonus" 0.35
+						"airblast vulnerability multiplier" 0.05
+						"damage force reduction" 0.1
+						"bot medic uber health threshold" 444
+					}
+					ItemAttributes
+					{
+						ItemName "TF_WEAPON_MEDIGUN"
+						"lunchbox adds minicrits" 3
+						"medigun blast resist deployed" 10.0
+						"medigun blast resist passive"  4.0
+						"medigun charge is resists" 4
+						"ubercharge rate bonus" 225
+					}
+				}
+				TFBot //Massive Luna Tick
+				{
+					Name "Luna Tick"
+					Class Scout
+					Skill Expert
+					Health 28000
+					Scale 1.75
+					WeaponRestrictions "PrimaryOnly"
+					Attributes MiniBoss
+					Item "The Back Scatter"
+					ClassIcon "scout_fan"
+					CharacterAttributes
+					{
+						"move speed bonus" 0.35
+						"airblast vulnerability multiplier" 0.1
+						"damage force reduction" 0.1
+					}
+					ItemAttributes
+					{
+						ItemName "The Back Scatter"
+						"scattergun has knockback" 1
+						"scattergun knockback mult" 3.0
+						"minicrits become crits" 1
+					}
+				}
+				TFBot //Massive Luna Tick
+				{
+					Name "Luna Tick"
+					Class Scout
+					Skill Expert
+					Health 28000
+					Scale 1.75
+					WeaponRestrictions "PrimaryOnly"
+					Attributes MiniBoss
+					Item "The Back Scatter"
+					ClassIcon "scout_fan"
+					CharacterAttributes
+					{
+						"move speed bonus" 0.35
+						"airblast vulnerability multiplier" 0.1
+						"damage force reduction" 0.1
+					}
+					ItemAttributes
+					{
+						ItemName "The Back Scatter"
+						"scattergun has knockback" 1
+						"scattergun knockback mult" 3.0
+						"minicrits become crits" 1
+					}
+				}
+			}
+		}
+	}
+}
+//
