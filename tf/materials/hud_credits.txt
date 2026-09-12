@@ -1,0 +1,3 @@
+Icon Credits:
+Lite 	medic_kritz_lite. homewrecker, demo_clusterbomb. directhit
+nys demo_loch_nys demo_caber_nys
